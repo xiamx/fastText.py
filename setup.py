@@ -20,7 +20,7 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version='0.1.0',
+    version='0.2.0',
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
