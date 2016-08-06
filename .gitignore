@@ -1,0 +1,11 @@
+*.egg-info
+data/
+*.pyc
+
+build/
+data/
+result/
+dist/
+
+fasttext/train.cpp
+fasttext/utils.cpp
