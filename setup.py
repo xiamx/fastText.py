@@ -24,7 +24,7 @@ setup(
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
-    description='A Python wrapper for Facebook fastText',
+    description='A Python interface for Facebook fastText library',
     license='BSD 3-Clause License',
     packages=find_packages(),
     ext_modules = cythonize(extensions)
