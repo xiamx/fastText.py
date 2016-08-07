@@ -1,1 +1,1 @@
-from .train import *
+from .fasttext import *

@@ -1,22 +1,20 @@
-# Train module
-# This module is used to create word vectors model or classifier
+# fastText C++ interface
 cimport utils
+
+# Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
-from libc.string cimport strcpy
 from cpython.string cimport PyString_AsString
+from libcpp.string cimport string
 
-from .model import Model
-
+# Python module
 import os
 
-# Expose train function from cpp/src/fasttext.cc
-cdef extern from "cpp/src/fasttext.cc":
-    void train(int argc, char **argv)
+cdef extern from "interface.h":
+    void train_wrapper(int argc, char **argvm, int silent);
 
-# skipgram: Learn word representation using skipgram model
-def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5,
+def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
         min_count=5, neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3,
-        maxn=6, thread=12, verbose=10000, t=1e-4):
+        maxn=6, thread=12, verbose=10000, t=1e-4, silent=1):
     """
     The following arguments are mandatory:
       input      training file path
@@ -37,6 +35,7 @@ def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5,
       thread     number of threads [12]
       verbose    how often to print to stdout [10000]
       t          sampling threshold [0.0001]
+      silent     supress the output from fastText [1]
     """
 
     # Check if the input_file is valid
@@ -51,43 +50,35 @@ def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5,
         raise IOError('fastText: output is not writeable!')
 
     # Initialize log & sigmoid tables
-    utils.init_tables()
+    utils.initTables()
 
     # Setup argv, arguments and their values
     model_name = 'skipgram'
-    argv = ['fasttext', model_name]
-    args = ['-input', '-output', '-lr', '-dim', '-ws', '-epoch', '-minCount',
+    py_argv = ['fasttext', model_name]
+    py_args = ['-input', '-output', '-lr', '-dim', '-ws', '-epoch', '-minCount',
             '-neg', '-wordNgrams', '-loss', '-bucket', '-minn', '-maxn',
             '-thread', '-verbose', '-t']
     values = [input_file, output, lr, dim, ws, epoch, min_count, neg,
             word_ngrams, loss, bucket, minn, maxn, thread, verbose, t]
 
-    for arg, value in zip(args, values):
-        argv.append(arg)
-        argv.append(str(value))
-    argc = len(argv)
+    for arg, value in zip(py_args, values):
+        py_argv.append(arg)
+        py_argv.append(str(value))
+    argc = len(py_argv)
 
     # Converting Python object to C++
     cdef int c_argc = argc
     cdef char **c_argv = <char **>malloc(c_argc * sizeof(char *))
-    for i, arg in enumerate(argv):
+    for i, arg in enumerate(py_argv):
         c_argv[i] = PyString_AsString(arg)
 
-    # Call train function with specified argc & argv
-    train(c_argc, c_argv)
+    # Run the train wrapper
+    train_wrapper(c_argc, c_argv, silent)
 
     # Free the log & sigmoid tables from the heap
-    utils.free_tables()
+    utils.freeTables()
 
     # Free the allocated memory
     # The content from PyString_AsString is not deallocated
-    # info: https://docs.python.org/2/c-api/string.html#c.PyString_AsString
     free(c_argv)
 
-    # Return fastText model
-    input_path = os.path.join(os.getcwd(), input_file)
-    output_bin = os.path.join(os.getcwd(), output + '.bin')
-    output_vec = os.path.join(os.getcwd(), output + '.vec')
-    return Model(model_name, input_path, output_bin, output_vec, lr, dim, ws,
-        epoch, min_count, neg, word_ngrams, loss, bucket, minn, maxn, thread,
-        verbose, t)
