@@ -11,7 +11,100 @@ from libcpp.string cimport string
 
 # Python module
 import os
-from model import Model
+from model import WordVectorModel
+
+# This class wrap C++ class FastTextModel, so it can be accessed via Python
+cdef class FastTextModelWrapper:
+    cdef FastTextModel fm
+
+    def __cinit__(self):
+        self.fm = FastTextModel()
+
+    def get_words(self):
+        return self.fm.getWords()
+
+    def get_vector(self, string word):
+        return self.fm.getVectorWrapper(word)
+
+    @property
+    def inputFileName(self):
+        return self.fm.inputFileName;
+
+    @property
+    def testFileName(self):
+        return self.fm.testFileName;
+
+    @property
+    def outputFileName(self):
+        return self.fm.outputFileName;
+
+    @property
+    def lr(self):
+        return self.fm.lr;
+
+    @property
+    def dim(self):
+        return self.fm.dim;
+
+    @property
+    def ws(self):
+        return self.fm.ws;
+
+    @property
+    def epoch(self):
+        return self.fm.epoch;
+
+    @property
+    def minCount(self):
+        return self.fm.minCount;
+
+    @property
+    def neg(self):
+        return self.fm.neg;
+
+    @property
+    def wordNgrams(self):
+        return self.fm.wordNgrams;
+
+    @property
+    def lossName(self):
+        return self.fm.lossName;
+
+    @property
+    def modelName(self):
+        return self.fm.modelName;
+
+    @property
+    def bucket(self):
+        return self.fm.bucket;
+
+    @property
+    def minn(self):
+        return self.fm.minn;
+
+    @property
+    def maxn(self):
+        return self.fm.maxn;
+
+    @property
+    def thread(self):
+        return self.fm.thread;
+
+    @property
+    def verbose(self):
+        return self.fm.verbose;
+
+    @property
+    def neg(self):
+        return self.fm.neg;
+
+    @property
+    def t(self):
+        return self.fm.t;
+
+    @property
+    def label(self):
+        return self.fm.label;
 
 def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
         min_count=5, neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3,
@@ -95,8 +188,11 @@ def load_model(string filename):
     if not os.path.isfile(filename):
         raise ValueError('fastText: trained model cannot be opened!')
 
-    cdef FastTextModel model
-    loadModelWrapper(filename, model)
-    words = model.getWords()
-    vectors = model.getVectors()
-    return Model(words=words, vectors=vectors)
+    model = FastTextModelWrapper()
+    loadModelWrapper(filename, model.fm)
+
+    # TODO: handle supervised here
+    if model.fm.modelName == 'skipgram':
+        return WordVectorModel(model)
+    else:
+        raise ValueError('fastText: model name not exists!')

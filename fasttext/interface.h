@@ -3,19 +3,48 @@
 
 #include <string>
 #include <vector>
+
 #include "cpp/src/real.h"
+#include "cpp/src/args.h"
+#include "cpp/src/dictionary.h"
+#include "cpp/src/matrix.h"
 
 class FastTextModel {
     private:
         std::vector<std::string> _words;
-        std::vector<std::vector<real>> _vectors;
+
+        Dictionary _dict;
+        Matrix _matrix;
 
     public:
+        FastTextModel();
+        std::string inputFileName;
+        std::string testFileName;
+        std::string outputFileName;
+        double lr;
+        int dim;
+        int ws;
+        int epoch;
+        int minCount;
+        int neg;
+        int wordNgrams;
+        std::string lossName;
+        std::string modelName;
+        int bucket;
+        int minn;
+        int maxn;
+        int thread;
+        int verbose;
+        double t;
+        std::string label;
+
         std::vector<std::string> getWords();
-        std::vector<std::vector<real>> getVectors();
+        std::vector<real> getVectorWrapper(std::string word);
 
         void addWord(std::string word);
-        void addVector(std::vector<real> vector);
+        void setDict(Dictionary dict);
+        void setMatrix(Matrix matrix);
+        void setArg(Args arg);
 };
 
 void trainWrapper(int argc, char **argv, int silent);
