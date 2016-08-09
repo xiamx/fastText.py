@@ -41,14 +41,13 @@ void trainWrapper(int argc, char **argv, int silent)
     /* if silent > 0, the log from train() function will be supressed */
     if(silent > 0) {
         std::cout.rdbuf(new_ofs.rdbuf());
-    }
-
-    train(argc, argv);
-
-    if(silent > 0) {
+        train(argc, argv);
         std::cout.rdbuf(old_ofs);
-        new_ofs.close();
+    } else {
+        train(argc, argv);
     }
+
+    new_ofs.close();
 }
 
 void loadModelWrapper(std::string filename, FastTextModel& model)

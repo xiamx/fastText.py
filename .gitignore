@@ -1,11 +1,11 @@
 *.egg-info
 data/
 *.pyc
+*.so
 
 build/
 data/
 result/
 dist/
 
-fasttext/train.cpp
-fasttext/utils.cpp
+fasttext/fasttext.cpp
