@@ -1,30 +1,17 @@
 # fastText Model representation
+import numpy as np
+from numpy.linalg import norm
 
 class Model(object):
-    def __init__(self, name, input_file, output_bin, output_vec, lr, dim, ws,
-            epoch, min_count, neg, word_ngrams, loss, bucket, minn, maxn,
-            thread, verbose, t):
+    def __init__(self, words, vectors):
+        self.words = words
+        self.word_vector = dict(zip(words, vectors))
 
-        # fastText model attributes
-        self.name = name
-        self.input_file = input_file
-        self.output_bin = output_bin
-        self.output_vec = output_vec
-        self.lr = lr
-        self.dim = dim
-        self.ws = ws
-        self.epoch = epoch
-        self.min_count = min_count
-        self.neg = neg
-        self.word_ngrams = word_ngrams
-        self.loss = loss
-        self.bucket = bucket
-        self.minn = minn
-        self.maxn = maxn
-        self.thread = thread
-        self.verbose = verbose
-        self.t = t
-
-        # TODO: load word_vectors here
-        # self.word_vectors # dictionary that map word to numpy array
-
+    def cosine_similarity(self, first_word, second_word):
+        vector_dict = self.word_vector
+        if first_word in vector_dict and second_word in vector_dict:
+            v1 = vector_dict[first_word]
+            v2 = vector_dict[second_word]
+            dot_product = np.dot(v1,v2)
+            cosine_sim = dot_product/(norm(v1)*norm(v2))
+            return cosine_sim

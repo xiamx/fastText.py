@@ -1,5 +1,8 @@
 # fastText C++ interface
 cimport utils
+from interface cimport trainWrapper
+from interface cimport loadModelWrapper
+from interface cimport FastTextModel
 
 # Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
@@ -8,9 +11,7 @@ from libcpp.string cimport string
 
 # Python module
 import os
-
-cdef extern from "interface.h":
-    void train_wrapper(int argc, char **argvm, int silent);
+from model import Model
 
 def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
         min_count=5, neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3,
@@ -45,6 +46,7 @@ def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
     # Check if the output is writeable
     try:
         f = open(output, 'w')
+        os.remove(output)
         f.close()
     except IOError:
         raise IOError('fastText: output is not writeable!')
@@ -73,7 +75,10 @@ def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
         c_argv[i] = PyString_AsString(arg)
 
     # Run the train wrapper
-    train_wrapper(c_argc, c_argv, silent)
+    trainWrapper(c_argc, c_argv, silent)
+
+    # Load the model
+    model = load_model(output + '.bin')
 
     # Free the log & sigmoid tables from the heap
     utils.freeTables()
@@ -82,3 +87,16 @@ def skipgram(string input_file, string output, lr=0.05, dim=100, ws=5, epoch=5,
     # The content from PyString_AsString is not deallocated
     free(c_argv)
 
+    return model
+
+# load_model: load a word vector model
+def load_model(string filename):
+    # Check if the filename is readable
+    if not os.path.isfile(filename):
+        raise ValueError('fastText: trained model cannot be opened!')
+
+    cdef FastTextModel model
+    loadModelWrapper(filename, model)
+    words = model.getWords()
+    vectors = model.getVectors()
+    return Model(words=words, vectors=vectors)
