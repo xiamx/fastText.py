@@ -1,15 +1,20 @@
 
-test:
-	python fasttext/fasttext_test.py
-.PHONY: test
+all: install test
+
+test: test-skipgram test-cbow
 
 buildext:
 	python setup.py build_ext --inplace
 .PHONY: buildext
 
 install:
-	python setup.py develop
+	pip install -r requirements.txt
+	python setup.py install
 .PHONY: install
+
+install-dev:
+	python setup.py develop
+.PHONY: install-dev
 
 fasttext/cpp/fasttext:
 	make --directory fasttext/cpp/

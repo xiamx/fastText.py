@@ -30,5 +30,8 @@ setup(
     description='A Python interface for Facebook fastText library',
     license='BSD 3-Clause License',
     packages=['fasttext'],
-    ext_modules = cythonize(extensions)
+    ext_modules = cythonize(extensions),
+    install_requires=[
+        'numpy>=1'
+    ]
 )
