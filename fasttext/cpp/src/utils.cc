@@ -8,16 +8,15 @@
  */
 
 #include "utils.h"
+
 #include <cmath>
 #include <ios>
-#include <assert.h>
 
 namespace utils {
   real* t_sigmoid;
   real* t_log;
 
   real log(real x) {
-    assert(t_log != NULL);
     if (x > 1.0) {
       return 0.0;
     }
@@ -26,7 +25,6 @@ namespace utils {
   }
 
   real sigmoid(real x) {
-    assert(t_sigmoid != NULL);
     if (x < -MAX_SIGMOID) {
       return 0.0;
     } else if (x > MAX_SIGMOID) {
@@ -61,8 +59,8 @@ namespace utils {
   void freeTables() {
     delete[] t_sigmoid;
     delete[] t_log;
-    t_sigmoid = NULL;
-    t_log = NULL;
+    t_sigmoid = nullptr;
+    t_log = nullptr;
   }
 
   int64_t size(std::ifstream& ifs) {
@@ -74,8 +72,5 @@ namespace utils {
     char c;
     ifs.clear();
     ifs.seekg(std::streampos(pos));
-    do {
-      ifs.get(c);
-    } while (!iswspace(c));
   }
 }

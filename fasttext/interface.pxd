@@ -8,10 +8,6 @@ cdef extern from "cpp/src/real.h":
 cdef extern from "interface.h":
     cdef cppclass FastTextModel:
         FastTextModel()
-        string inputFileName;
-        string testFileName;
-        string outputFileName;
-        double lr;
         int dim;
         int ws;
         int epoch;
@@ -23,10 +19,8 @@ cdef extern from "interface.h":
         int bucket;
         int minn;
         int maxn;
-        int thread;
-        int verbose;
+        int lrUpdateRate;
         double t;
-        string label;
 
         vector[string] getWords()
         vector[real] getVectorWrapper(string word)

@@ -8,11 +8,15 @@
  */
 
 #include "dictionary.h"
+
 #include <assert.h>
+
 #include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <unordered_map>
+#include <cctype>
+
 #include "args.h"
 
 extern Args args;
@@ -68,7 +72,8 @@ int64_t Dictionary::ntokens() {
 }
 
 const std::vector<int32_t>& Dictionary::getNgrams(int32_t i) {
-  assert(i >= 0 && i < nwords_);
+  assert(i >= 0);
+  assert(i < nwords_);
   return words_[i].subwords;
 }
 
@@ -84,7 +89,8 @@ const std::vector<int32_t> Dictionary::getNgrams(const std::string& word) {
 }
 
 bool Dictionary::discard(int32_t id, real rand) {
-  assert(id >= 0 && id < nwords_);
+  assert(id >= 0);
+  assert(id < nwords_);
   if (args.model == model_name::sup) return false;
   return rand > pdiscard_[id];
 }
@@ -95,12 +101,14 @@ int32_t Dictionary::getId(const std::string& w) {
 }
 
 entry_type Dictionary::getType(int32_t id) {
-  assert(id >= 0 && id < size_);
+  assert(id >= 0);
+  assert(id < size_);
   return words_[id].type;
 }
 
 std::string Dictionary::getWord(int32_t id) {
-  assert(id >= 0 && id < size_);
+  assert(id >= 0);
+  assert(id < size_);
   return words_[id].word;
 }
 
@@ -143,9 +151,9 @@ std::string Dictionary::readWord(std::ifstream& fin)
 {
   char c;
   std::string word;
-  while (!fin.eof()) {
+  while (fin.peek() != EOF) {
     fin.get(c);
-    if (iswspace(c)) {
+    if (isspace(c)) {
       if (word.empty()) {
         if (c == '\n') return EOS;
         continue;
@@ -241,11 +249,11 @@ int32_t Dictionary::getLine(std::ifstream& ifs,
     ifs.seekg(std::streampos(0));
   }
   while (!(token = readWord(ifs)).empty()) {
+    ntokens++;
     if (token == EOS) break;
     int32_t wid = getId(token);
     if (wid < 0) continue;
     entry_type type = getType(wid);
-    ntokens++;
     if (type == entry_type::word && !discard(wid, uniform(rng))) {
       words.push_back(wid);
     }
@@ -258,6 +266,8 @@ int32_t Dictionary::getLine(std::ifstream& ifs,
 }
 
 std::string Dictionary::getLabel(int32_t lid) {
+  assert(lid >= 0);
+  assert(lid < nlabels_);
   return words_[lid + nwords_].word;
 }
 

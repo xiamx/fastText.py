@@ -18,10 +18,6 @@ class FastTextModel {
 
     public:
         FastTextModel();
-        std::string inputFileName;
-        std::string testFileName;
-        std::string outputFileName;
-        double lr;
         int dim;
         int ws;
         int epoch;
@@ -33,10 +29,8 @@ class FastTextModel {
         int bucket;
         int minn;
         int maxn;
-        int thread;
-        int verbose;
+        int lrUpdateRate;
         double t;
-        std::string label;
 
         std::vector<std::string> getWords();
         std::vector<real> getVectorWrapper(std::string word);
