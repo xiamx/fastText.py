@@ -6,7 +6,6 @@ from interface cimport FastTextModel
 
 # Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
-from cpython.string cimport PyString_AsString
 from libcpp.string cimport string
 
 # Python module
@@ -134,8 +133,10 @@ def _wordvector_model(model_name, string input_file, string output, lr,
     # Converting Python object to C++
     cdef int c_argc = argc
     cdef char **c_argv = <char **>malloc(c_argc * sizeof(char *))
+    cdef bytes py_string;
     for i, arg in enumerate(py_argv):
-        c_argv[i] = PyString_AsString(arg)
+        py_string = arg
+        c_argv[i] = py_string
 
     # Run the train wrapper
     trainWrapper(c_argc, c_argv, silent)
