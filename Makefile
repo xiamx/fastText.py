@@ -27,7 +27,7 @@ test/skipgram_params_test.bin:
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-skipgram: fasttext/cpp/fasttext test/skipgram_params_test.bin
-	python test/skipgram_test.py --failfast --verbose
+	python test/skipgram_test.py --verbose
 
 # Test for cbow model
 test/cbow_params_test.bin:
@@ -37,4 +37,5 @@ test/cbow_params_test.bin:
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
-	python test/cbow_test.py --failfast --verbose
+	python test/cbow_test.py --verbose
+
