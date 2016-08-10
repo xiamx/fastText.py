@@ -135,7 +135,8 @@ def _wordvector_model(model_name, string input_file, string output, lr,
     cdef char **c_argv = <char **>malloc(c_argc * sizeof(char *))
     cdef bytes py_string;
     for i, arg in enumerate(py_argv):
-        py_string = arg
+        # Explicitly encode str to bytes, to support Python 3
+        py_string = bytes(arg)
         c_argv[i] = py_string
 
     # Run the train wrapper
