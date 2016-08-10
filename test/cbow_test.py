@@ -15,7 +15,6 @@ class TestLoadModel(unittest.TestCase):
         model = ft.load_model(cbow_file)
 
         # Make sure the model is returned correctly
-        self.assertIsInstance(model,ft.model.WordVectorModel)
         self.assertEqual(model.model_name, 'cbow')
 
         # Make sure all params loaded correctly
