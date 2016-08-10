@@ -2,6 +2,10 @@
 data/
 *.pyc
 *.so
+*.tar.gz
+*.DS_Store
+*.bin
+*.vec
 
 build/
 data/

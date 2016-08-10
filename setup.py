@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
+import unittest
 
 # Define the C++ extension
 extensions = [
@@ -28,6 +29,6 @@ setup(
     url='https://github.com/pyk/fastText.py',
     description='A Python interface for Facebook fastText library',
     license='BSD 3-Clause License',
-    packages=find_packages(),
+    packages=['fasttext'],
     ext_modules = cythonize(extensions)
 )
