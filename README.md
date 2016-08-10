@@ -19,14 +19,17 @@ pip install fasttext
 This package has two main use cases: word representation learning and
 text classification.
 
-These were described in the two papers [1](#enriching-word-vectors-with-subword-information) and [2](#bag-of-tricks-for-efficient-text-classification).
+These were described in the two papers
+[1](#enriching-word-vectors-with-subword-information)
+and [2](#bag-of-tricks-for-efficient-text-classification).
 
 ### Word representation learning
 
 In order to learn word vectors, as described in
 [1](#enriching-word-vectors-with-subword-information),
 
-We can use `fasttext.skipgram` function like the following:
+We can use `fasttext.skipgram` and `fasttext.cbow` function
+like the following:
 
 ```python
 import fasttext
@@ -39,7 +42,6 @@ print model.words # list of words in dictionary
 model = fasttext.cbow('data.txt', 'model')
 print model.words # list of words in dictionary
 ```
-
 
 where `data.txt` is a training file containing `utf-8` encoded text.
 By default the word vectors will take into account character n-grams from
@@ -105,15 +107,15 @@ _Works in progress_
 import fasttext
 
 model = fasttext.skipgram(params)
-mode.words
+model.words
 model.get_vector(word)
 
 model = fasttext.cbow(params)
-mode.words
+model.words
 model.get_vector(word)
 
 model = fasttext.load_model('model.bin')
-mode.words
+model.words
 model.get_vector(word)
 ```
 
