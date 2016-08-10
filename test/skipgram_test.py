@@ -15,7 +15,6 @@ class TestLoadModel(unittest.TestCase):
         model = ft.load_model(skipgram_file)
 
         # Make sure the model is returned correctly
-        self.assertIsInstance(model,ft.model.WordVectorModel)
         self.assertEqual(model.model_name, 'skipgram')
 
         # Make sure all params loaded correctly
@@ -51,7 +50,7 @@ class TestLoadModel(unittest.TestCase):
         thread=4
         lr_update_rate=10000
         t=1e-4
-        silent=1
+        silent=0
 
         # train skipgram model
         model = ft.skipgram(input_file, output, lr, dim, ws, epoch, min_count,

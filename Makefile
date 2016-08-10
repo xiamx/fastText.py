@@ -1,15 +1,20 @@
 
-test:
-	python fasttext/fasttext_test.py
-.PHONY: test
+all: install test
+
+test: test-skipgram test-cbow
 
 buildext:
 	python setup.py build_ext --inplace
 .PHONY: buildext
 
 install:
-	python setup.py develop
+	pip install -r requirements.txt
+	python setup.py install
 .PHONY: install
+
+install-dev:
+	python setup.py develop
+.PHONY: install-dev
 
 fasttext/cpp/fasttext:
 	make --directory fasttext/cpp/
@@ -22,7 +27,7 @@ test/skipgram_params_test.bin:
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-skipgram: fasttext/cpp/fasttext test/skipgram_params_test.bin
-	python test/skipgram_test.py --failfast --verbose
+	python test/skipgram_test.py --verbose
 
 # Test for cbow model
 test/cbow_params_test.bin:
@@ -32,4 +37,5 @@ test/cbow_params_test.bin:
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
-	python test/cbow_test.py --failfast --verbose
+	python test/cbow_test.py --verbose
+
