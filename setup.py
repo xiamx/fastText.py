@@ -32,6 +32,7 @@ setup(
     packages=['fasttext'],
     ext_modules = cythonize(extensions),
     install_requires=[
-        'numpy>=1'
+        'numpy>=1',
+        'future'
     ]
 )

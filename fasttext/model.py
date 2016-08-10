@@ -12,8 +12,8 @@ class WordVectorModel(object):
         self.min_count = model.minCount;
         self.neg = model.neg;
         self.word_ngrams = model.wordNgrams;
-        self.loss_name = model.lossName;
-        self.model_name = model.modelName;
+        self.loss_name = model.lossName.decode('ascii');
+        self.model_name = model.modelName.decode('ascii');
         self.bucket = model.bucket;
         self.minn = model.minn;
         self.maxn = model.maxn;
