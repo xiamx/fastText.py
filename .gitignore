@@ -13,3 +13,4 @@ result/
 dist/
 
 fasttext/fasttext.cpp
+facebookresearch-fasttext-*
