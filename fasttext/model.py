@@ -6,10 +6,6 @@ class WordVectorModel(object):
     def __init__(self, model):
         self._model = model
         self.words = model.get_words()
-        self.input_file_name = model.inputFileName;
-        self.test_file_name = model.testFileName;
-        self.output_file_name = model.outputFileName;
-        self.lr = model.lr;
         self.dim = model.dim;
         self.ws = model.ws;
         self.epoch = model.epoch;
@@ -21,8 +17,7 @@ class WordVectorModel(object):
         self.bucket = model.bucket;
         self.minn = model.minn;
         self.maxn = model.maxn;
-        self.thread = model.thread;
-        self.verbose = model.verbose;
+        self.lr_update_rate = model.lrUpdateRate;
         self.t = model.t;
 
     def get_vector(self, word):

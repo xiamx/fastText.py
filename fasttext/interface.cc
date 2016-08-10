@@ -36,10 +36,6 @@ void FastTextModel::setMatrix(Matrix matrix)
 
 void FastTextModel::setArg(Args arg)
 {
-    inputFileName = arg.input;
-    testFileName = arg.test;
-    outputFileName = arg.output;
-    lr = arg.lr;
     dim = arg.dim;
     ws = arg.ws;
     epoch = arg.epoch;
@@ -67,10 +63,8 @@ void FastTextModel::setArg(Args arg)
     bucket = arg.bucket;
     minn = arg.minn;
     maxn = arg.maxn;
-    thread = arg.thread;
-    verbose = arg.verbose;
+    lrUpdateRate = arg.lrUpdateRate;
     t = arg.t;
-    label = arg.label;
 }
 
 std::vector<real> FastTextModel::getVectorWrapper(std::string word)
