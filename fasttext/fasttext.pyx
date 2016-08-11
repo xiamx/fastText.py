@@ -158,7 +158,7 @@ def _wordvector_model(model_name, input_file, output, lr, dim, ws, epoch,
 # Learn word representation using skipgram model
 def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
         neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
-        thread=12, lr_update_rate=10000, t=1e-4, silent=1):
+        thread=12, lr_update_rate=100, t=1e-4, silent=1):
     return _wordvector_model('skipgram', input_file, output, lr,
         dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
         maxn, thread, lr_update_rate, t, silent)
@@ -166,7 +166,7 @@ def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
 # Learn word representation using cbow model
 def cbow(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
         neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
-        thread=12, lr_update_rate=10000, t=1e-4, silent=1):
+        thread=12, lr_update_rate=100, t=1e-4, silent=1):
     return _wordvector_model('cbow', input_file, output, lr,
         dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
         maxn, thread, lr_update_rate, t, silent)
