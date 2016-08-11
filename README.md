@@ -6,7 +6,7 @@ fasttext is a Python interface for
 ## Requirements
 
 fasttext support Python 2.6 or newer. It requires
-[Cython](https://pypi.python.org/pypi/Cython/) in order to compile the C++ extension.
+[Cython](https://pypi.python.org/pypi/Cython/) in order to build the C++ extension.
 
 ## Installation
 
@@ -136,7 +136,7 @@ minn           min length of char ngram [3]
 maxn           max length of char ngram [6]
 thread         number of threads [12]
 t              sampling threshold [0.0001]
-silent         suspress the log from the C++ extension [1]
+silent         disable the log output from the C++ extension [1]
 ```
 
 ## References
