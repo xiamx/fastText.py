@@ -26,10 +26,8 @@ and [2](#bag-of-tricks-for-efficient-text-classification).
 ### Word representation learning
 
 In order to learn word vectors, as described in
-[1](#enriching-word-vectors-with-subword-information),
-
-We can use `fasttext.skipgram` and `fasttext.cbow` function
-like the following:
+[1](#enriching-word-vectors-with-subword-information), we can use
+`fasttext.skipgram` and `fasttext.cbow` function like the following:
 
 ```python
 import fasttext
@@ -122,23 +120,23 @@ model.get_vector(word)
 List of params and their default value:
 
 ```
-input       training file path
-output      output file path
-lr          learning rate [0.05]
-dim         size of word vectors [100]
-ws          size of the context window [5]
-epoch       number of epochs [5]
-min_count   minimal number of word occurences [1]
-neg         number of negatives sampled [5]
-word_ngrams max length of word ngram [1]
-loss        loss function {ns, hs, softmax} [ns]
-bucket      number of buckets [2000000]
-minn        min length of char ngram [3]
-maxn        max length of char ngram [6]
-thread      number of threads [12]
-verbose     how often to print to stdout [10000]
-t           sampling threshold [0.0001]
-silent      suspress the log from the C++ extension [1]
+input          training file path
+output         output file path
+lr             learning rate [0.05]
+lr_update_rate change the rate of updates for the learning rate [100]
+dim            size of word vectors [100]
+ws             size of the context window [5]
+epoch          number of epochs [5]
+min_count      minimal number of word occurences [1]
+neg            number of negatives sampled [5]
+word_ngrams    max length of word ngram [1]
+loss           loss function {ns, hs, softmax} [ns]
+bucket         number of buckets [2000000]
+minn           min length of char ngram [3]
+maxn           max length of char ngram [6]
+thread         number of threads [12]
+t              sampling threshold [0.0001]
+silent         suspress the log from the C++ extension [1]
 ```
 
 ## References
