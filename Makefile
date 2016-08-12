@@ -33,7 +33,7 @@ test-skipgram: fasttext/cpp/fasttext test/skipgram_params_test.bin
 test/cbow_params_test.bin:
 	./fasttext/cpp/fasttext cbow -input test/params_test.txt -output \
 		test/cbow_params_test -lr 0.005 -dim 50 -ws 5 -epoch 1 \
-		-minCount 3 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
+		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
