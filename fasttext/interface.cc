@@ -19,6 +19,11 @@ std::vector<std::string> FastTextModel::getWords()
     return _words;
 }
 
+Dictionary FastTextModel::getDictionary()
+{
+    return _dict;
+}
+
 void FastTextModel::addWord(std::string word)
 {
     _words.push_back(word);
@@ -106,9 +111,12 @@ void loadModelWrapper(std::string filename, FastTextModel& model)
     model.setDict(dict);
     model.setMatrix(input);
 
-    Vector vec(args.dim);
+    /* Do the indexing on Cython instead to support unicode
+     * instead of plain bytes */
+    /*
     for(int32_t i = 0; i < dict.nwords(); i++) {
         std::string word  = dict.getWord(i);
         model.addWord(word);
     }
+    */
 }
