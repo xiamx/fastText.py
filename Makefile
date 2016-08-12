@@ -1,7 +1,7 @@
 
 all: install test
 
-test: test-skipgram test-cbow
+test: test-skipgram test-cbow test-supervised
 
 buildext:
 	python setup.py build_ext --inplace
@@ -39,3 +39,11 @@ test/cbow_params_test.bin:
 test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
 	python test/cbow_test.py --verbose
 
+# Test for classifier
+test/supervised_params_test.bin:
+	./fasttext/cpp/fasttext supervised -input test/supervised_params_test.txt \
+		-output test/supervised_params_test -dim 10 -lr 0.1 -wordNgrams 2 \
+		-minCount 1 -bucket 2000000 -epoch 5 -thread 4
+
+test-supervised: fasttext/cpp/fasttext test/supervised_params_test.bin
+	python test/supervised_test.py --verbose
