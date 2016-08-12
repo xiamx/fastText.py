@@ -1,7 +1,7 @@
 # Set encoding to support Python 2
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import unittest
-
 from os import path
 
 import fasttext as ft
@@ -36,10 +36,9 @@ class TestCBOWModel(unittest.TestCase):
         self.assertEqual(len(model.get_vector('the')), model.dim)
 
         # Make sure we support unicode character
-        words = model.words
-        exists = u'Καλημέρα' in words
-        self.assertTrue(exists)
-        self.assertEqual(len(model.get_vector(u'Καλημέρα')), model.dim)
+        unicode_str = 'Καλημέρα'
+        self.assertTrue(unicode_str in model.words)
+        self.assertEqual(len(model.get_vector(unicode_str)), model.dim)
 
     def test_create_cbow_model(self):
         # set params
@@ -85,10 +84,9 @@ class TestCBOWModel(unittest.TestCase):
         self.assertEqual(len(model.get_vector('the')), dim)
 
         # Make sure we support unicode character
-        words = model.words
-        exists = u'Καλημέρα' in words
-        self.assertTrue(exists)
-        self.assertEqual(len(model.get_vector(u'Καλημέρα')), model.dim)
+        unicode_str = 'Καλημέρα'
+        self.assertTrue(unicode_str in model.words)
+        self.assertEqual(len(model.get_vector(unicode_str)), model.dim)
 
 if __name__ == '__main__':
     unittest.main()
