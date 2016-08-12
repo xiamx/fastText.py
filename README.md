@@ -160,8 +160,9 @@ model = fasttext.load_model('model.bin')
 ```
 
 ### Attributes and methods for the model
+Skipgram and CBOW model have the following atributes & methods
+
 ```python
-# Skipgram and CBOW model have the following atributes & methods
 model.model_name       # Model name
 model.words            # List of words in the dictionary
 model.dim              # Size of word vector
