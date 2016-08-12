@@ -71,7 +71,9 @@ The previously trained model can be used to compute word vectors for
 out-of-vocabulary words.
 
 ```python
-print model.get_vector('king') # get the vector of the word 'king'
+print model.get_vector('king')
+# or just use a nice syntax
+print model['king'] # get the vector of the word 'king'
 ```
 
 the following `fasttext(1)` command is equivalent:
@@ -89,7 +91,7 @@ We can use `fasttext.load_model` to load pre-trained model:
 ```python
 model = fasttext.load_model('model.bin')
 print model.words # list of words in dictionary
-print model.get_vector('king') # get the vector of the word 'king'
+print model['king'] # get the vector of the word 'king'
 ```
 
 ### Text classification
@@ -106,15 +108,15 @@ import fasttext
 
 model = fasttext.skipgram(params)
 model.words
-model.get_vector(word)
+model[word]
 
 model = fasttext.cbow(params)
 model.words
-model.get_vector(word)
+model[word]
 
 model = fasttext.load_model('model.bin')
 model.words
-model.get_vector(word)
+model[word]
 ```
 
 List of params and their default value:
