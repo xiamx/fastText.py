@@ -1,4 +1,4 @@
-# fasttext [![Build Status](https://travis-ci.org/pyk/fastText.py.svg?branch=master)](https://travis-ci.org/pyk/fastText.py)
+# fasttext [![Build Status](https://travis-ci.org/salestock/fastText.py.svg?branch=master)](https://travis-ci.org/salestock/fastText.py)
 
 fasttext is a Python interface for
 [Facebook fastText](https://github.com/facebookresearch/fastText).
