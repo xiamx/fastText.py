@@ -34,7 +34,11 @@ class TestSupervisedModel(unittest.TestCase):
         labels = []
         with open(input_file, 'r') as f:
             for line in f:
-                line = line.decode('utf-8')
+                # str in python 3 doesn't have decode method
+                try:
+                    line = line.decode('utf-8')
+                except:
+                    line = line
                 label = line.split(',')[0].strip()
                 label = label.replace(label_prefix, '')
                 if label in labels:
@@ -73,7 +77,11 @@ class TestSupervisedModel(unittest.TestCase):
         labels = []
         with open(input_file, 'r') as f:
             for line in f:
-                line = line.decode('utf-8')
+                # str in python 3 doesn't have decode method
+                try:
+                    line = line.decode('utf-8')
+                except:
+                    line = line
                 label = line.split(',')[0].strip()
                 label = label.replace(label_prefix, '')
                 if label in labels:
