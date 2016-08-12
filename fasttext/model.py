@@ -36,3 +36,21 @@ class WordVectorModel(object):
         dot_product = np.dot(v1, v2)
         cosine_sim = dot_product / (norm(v1) * norm(v2))
         return cosine_sim
+
+class SupervisedModel(object):
+    def __init__(self, model, labels):
+        self._model = model
+        self.labels = labels
+        self.dim = model.dim;
+        self.ws = model.ws;
+        self.epoch = model.epoch;
+        self.min_count = model.minCount;
+        self.neg = model.neg;
+        self.word_ngrams = model.wordNgrams;
+        self.loss_name = model.lossName.decode('utf-8');
+        self.model_name = model.modelName.decode('utf-8');
+        self.bucket = model.bucket;
+        self.minn = model.minn;
+        self.maxn = model.maxn;
+        self.lr_update_rate = model.lrUpdateRate;
+        self.t = model.t;

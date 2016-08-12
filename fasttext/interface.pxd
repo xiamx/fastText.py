@@ -9,8 +9,12 @@ cdef extern from "cpp/src/real.h":
 cdef extern from "cpp/src/dictionary.h":
     cdef cppclass Dictionary:
         Dictionary()
+
         int32_t nwords()
+        int32_t nlabels()
+
         string getWord(int32_t)
+        string getLabel(int32_t)
 
 cdef extern from "interface.h":
     cdef cppclass FastTextModel:
