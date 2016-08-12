@@ -12,7 +12,6 @@
 class FastTextModel {
     private:
         std::vector<std::string> _words;
-
         Dictionary _dict;
         Matrix _matrix;
 
@@ -39,6 +38,8 @@ class FastTextModel {
         void setDict(Dictionary dict);
         void setMatrix(Matrix matrix);
         void setArg(Args arg);
+
+        Dictionary getDictionary();
 };
 
 void trainWrapper(int argc, char **argv, int silent);

@@ -1,3 +1,6 @@
+# Set encoding to support Python 2
+# -*- coding: utf-8 -*-
+
 import unittest
 
 from os import path
@@ -22,7 +25,7 @@ class TestLoadModel(unittest.TestCase):
         self.assertEqual(model.dim, 100)
         self.assertEqual(model.ws, 5)
         self.assertEqual(model.epoch, 1)
-        self.assertEqual(model.min_count, 5)
+        self.assertEqual(model.min_count, 1)
         self.assertEqual(model.neg, 5)
         self.assertEqual(model.loss_name, 'ns')
         self.assertEqual(model.bucket, 2000000)
@@ -34,13 +37,18 @@ class TestLoadModel(unittest.TestCase):
         # Make sure the vector have the right dimension
         self.assertEqual(len(model.get_vector('the')), model.dim)
 
+        # Make sure we support unicode character
+        exists = u'Καλημέρα' in model.words
+        self.assertTrue(exists)
+        self.assertEqual(len(model.get_vector(u'Καλημέρα')), model.dim)
+
     def test_create_skipgram_model(self):
         # set params
         lr=0.005
         dim=10
         ws=5
         epoch=5
-        min_count=5
+        min_count=1
         neg=5
         word_ngrams=1
         loss='ns'
@@ -76,6 +84,11 @@ class TestLoadModel(unittest.TestCase):
 
         # Make sure the vector have the right dimension
         self.assertEqual(len(model.get_vector('the')), dim)
+
+        # Make sure we support unicode character
+        exists = u'Καλημέρα' in model.words
+        self.assertTrue(exists)
+        self.assertEqual(len(model.get_vector(u'Καλημέρα')), model.dim)
 
 if __name__ == '__main__':
     unittest.main()

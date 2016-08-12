@@ -3,6 +3,7 @@ cimport utils
 from interface cimport trainWrapper
 from interface cimport loadModelWrapper
 from interface cimport FastTextModel
+from interface cimport Dictionary
 
 # Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
@@ -21,67 +22,67 @@ cdef class FastTextModelWrapper:
         self.fm = FastTextModel()
 
     def get_words(self):
-        return self.fm.getWords()
+        return self.words
 
     def get_vector(self, word):
-        word_bytes = bytes(word, 'ascii')
+        word_bytes = bytes(word, 'utf-8')
         return self.fm.getVectorWrapper(word_bytes)
 
     @property
     def dim(self):
-        return self.fm.dim;
+        return self.fm.dim
 
     @property
     def ws(self):
-        return self.fm.ws;
+        return self.fm.ws
 
     @property
     def epoch(self):
-        return self.fm.epoch;
+        return self.fm.epoch
 
     @property
     def minCount(self):
-        return self.fm.minCount;
+        return self.fm.minCount
 
     @property
     def neg(self):
-        return self.fm.neg;
+        return self.fm.neg
 
     @property
     def wordNgrams(self):
-        return self.fm.wordNgrams;
+        return self.fm.wordNgrams
 
     @property
     def lossName(self):
-        return self.fm.lossName;
+        return self.fm.lossName
 
     @property
     def modelName(self):
-        return self.fm.modelName;
+        return self.fm.modelName
 
     @property
     def bucket(self):
-        return self.fm.bucket;
+        return self.fm.bucket
 
     @property
     def minn(self):
-        return self.fm.minn;
+        return self.fm.minn
 
     @property
     def maxn(self):
-        return self.fm.maxn;
+        return self.fm.maxn
 
     @property
     def lrUpdateRate(self):
-        return self.fm.lrUpdateRate;
+        return self.fm.lrUpdateRate
 
     @property
     def neg(self):
-        return self.fm.neg;
+        return self.fm.neg
 
     @property
     def t(self):
-        return self.fm.t;
+        return self.fm.t
 
 # load_model: load a word vector model
 def load_model(filename):
@@ -90,13 +91,19 @@ def load_model(filename):
         raise ValueError('fastText: trained model cannot be opened!')
 
     model = FastTextModelWrapper()
-    filename_bytes = bytes(filename, 'ascii')
+    filename_bytes = bytes(filename, 'utf-8')
     loadModelWrapper(filename_bytes, model.fm)
+    dictionary = model.fm.getDictionary()
+    cdef string word
+    words = []
+    for i in xrange(dictionary.nwords()):
+        word = dictionary.getWord(i)
+        words.append(word.decode('utf-8'))
 
     # TODO: handle supervised here
     model_name = model.fm.modelName
     if model_name == 'skipgram' or model_name == 'cbow':
-        return WordVectorModel(model)
+        return WordVectorModel(model, words)
     else:
         raise ValueError('fastText: model name not exists!')
 
@@ -121,7 +128,7 @@ def _wordvector_model(model_name, input_file, output, lr, dim, ws, epoch,
     utils.initTables()
 
     # Setup argv, arguments and their values
-    py_argv = [b'fasttext', bytes(model_name, 'ascii')]
+    py_argv = [b'fasttext', bytes(model_name, 'utf-8')]
     py_args = [b'-input', b'-output', b'-lr', b'-dim', b'-ws', b'-epoch',
             b'-minCount', b'-neg', b'-wordNgrams', b'-loss', b'-bucket',
             b'-minn', b'-maxn', b'-thread', b'-lrUpdateRate', b'-t']
@@ -130,7 +137,7 @@ def _wordvector_model(model_name, input_file, output, lr, dim, ws, epoch,
 
     for arg, value in zip(py_args, values):
         py_argv.append(arg)
-        py_argv.append(bytes(str(value), 'ascii'))
+        py_argv.append(bytes(str(value), 'utf-8'))
     argc = len(py_argv)
 
     # Converting Python object to C++

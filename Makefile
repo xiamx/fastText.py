@@ -23,7 +23,7 @@ fasttext/cpp/fasttext:
 test/skipgram_params_test.bin:
 	./fasttext/cpp/fasttext skipgram -input test/params_test.txt -output \
 		test/skipgram_params_test -lr 0.025 -dim 100 -ws 5 -epoch 1 \
-		-minCount 5 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
+		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4
 
 test-skipgram: fasttext/cpp/fasttext test/skipgram_params_test.bin
