@@ -132,7 +132,22 @@ equivalent as `fasttext(1)` command:
 
 This will output two files: `model.bin` and `model.vec`.
 
-TODO: add test and predict
+Once the model was trained, we can evaluate it by computing the precision
+at 1 (P@1) on a test set using `classifier.test` function:
+
+```python
+precision_at_one, nexamples = classifier.test('test.txt')
+print 'P@1:', precision_at_one
+print 'Number of examples:', nexamples
+```
+
+This will print the same output to stdout as:
+
+```shell
+./fasttext test model.bin test.txt
+```
+
+TODO: add predict method
 
 ## API documentation
 
@@ -184,6 +199,7 @@ model[word]            # Get the vector of specified word
 ### Supervised model
 
 Train & load the classifier
+
 ```python
 classifier = fasttext.supervised(params)
 ```
@@ -195,7 +211,15 @@ loaded using this function
 ```python
 # label_prefix is optional
 classifier = fasttext.load_model('classifier.bin', label_prefix='some_prefix')
+```
 
+### Test classifier
+This is equivalent as `fasttext(1)` test command. The test using the same
+model and test set will produce the same value for the precision at one
+and the number of examples.
+
+```python
+precision_at_one, nexamples = classifier.test(test_file)
 ```
 
 ### Attributes and methods for the classifier
@@ -216,7 +240,7 @@ classifier.minn           # Min length of char ngram
 classifier.maxn           # Max length of char ngram
 classifier.lr_update_rate # Rate of updates for the learning rate
 classifier.t              # Value of sampling threshold
-
+clsasifier.test(filename) # Test the classifier
 ```
 
 TODO: add classifier method here
