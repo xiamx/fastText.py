@@ -114,7 +114,7 @@ std::vector<double> FastTextModel::classifierTest(std::string filename)
 
     ifs.close();
     std::setprecision(3);
-    std::vector<double> result = {precision/nexamples, nexamples};
+    std::vector<double> result = {precision/nexamples, (double)nexamples};
     return result;
 }
 
