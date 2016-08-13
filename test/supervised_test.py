@@ -13,6 +13,30 @@ supervised_file = path.join(path.dirname(__file__), 'supervised_params_test.bin'
 input_file = path.join(path.dirname(__file__), 'supervised_params_test.txt')
 output = path.join(path.dirname(__file__), 'generated_supervised')
 
+def read_labels(filename, label_prefix):
+    labels = []
+    with open(filename, 'r') as f:
+        for line in f:
+            # Python 2 read file in ASCII encoding by default
+            # so we need to decode the str to UTF-8 first.
+            # But, in Python 3, str doesn't have decode method
+            # so this decoding step make the test fails.
+            # Python 3 read file in UTF-8 encoding by default so
+            # we wrap this in the try-except to support both Python 2
+            # and Python 3
+            try:
+                line = line.decode('utf-8')
+            except:
+                line = line
+
+            label = line.split(',')[0].strip()
+            label = label.replace(label_prefix, '')
+            if label in labels:
+                continue
+            else:
+                labels.append(label)
+    return labels
+
 # Test to make sure that supervised interface run correctly
 class TestSupervisedModel(unittest.TestCase):
     def test_load_supervised_model(self):
@@ -30,26 +54,13 @@ class TestSupervisedModel(unittest.TestCase):
         self.assertEqual(model.epoch, 5)
         self.assertEqual(model.bucket, 2000000)
 
-        # Count how many labels are in the input_file
-        labels = []
-        with open(input_file, 'r') as f:
-            for line in f:
-                # str in python 3 doesn't have decode method
-                try:
-                    line = line.decode('utf-8')
-                except:
-                    line = line
-                label = line.split(',')[0].strip()
-                label = label.replace(label_prefix, '')
-                if label in labels:
-                    continue
-                else:
-                    labels.append(label)
+        # Read labels from the the input_file
+        labels = read_labels(input_file, label_prefix)
 
         # Make sure labels are loaded correctly
         self.assertTrue(sorted(model.labels) == sorted(labels))
 
-    def test_create_supervised_model(self):
+    def test_train_classifier(self):
         # set params
         dim=10
         lr=0.005
@@ -61,7 +72,7 @@ class TestSupervisedModel(unittest.TestCase):
         silent=0
         label_prefix='__label__'
 
-        # train supervised model
+        # Train the classifier
         model = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
                 min_count=min_count, word_ngrams=word_ngrams, bucket=bucket,
                 thread=thread, silent=silent, label_prefix=label_prefix)
@@ -73,21 +84,8 @@ class TestSupervisedModel(unittest.TestCase):
         self.assertEqual(model.word_ngrams, word_ngrams)
         self.assertEqual(model.bucket, bucket)
 
-        # Count how many labels are in the input_file
-        labels = []
-        with open(input_file, 'r') as f:
-            for line in f:
-                # str in python 3 doesn't have decode method
-                try:
-                    line = line.decode('utf-8')
-                except:
-                    line = line
-                label = line.split(',')[0].strip()
-                label = label.replace(label_prefix, '')
-                if label in labels:
-                    continue
-                else:
-                    labels.append(label)
+        # Read labels from the the input_file
+        labels = read_labels(input_file, label_prefix)
 
         # Make sure .bin and .vec are generated
         self.assertTrue(path.isfile(output + '.bin'))

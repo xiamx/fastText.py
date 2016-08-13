@@ -43,7 +43,7 @@ class TestSkipgramModel(unittest.TestCase):
         self.assertTrue(unicode_str in model.words)
         self.assertEqual(len(model[unicode_str]), model.dim)
 
-    def test_create_skipgram_model(self):
+    def test_train_skipgram_model(self):
         # set params
         lr=0.005
         dim=10
