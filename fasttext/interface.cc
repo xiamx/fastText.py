@@ -34,9 +34,10 @@ void FastTextModel::setDict(Dictionary dict)
     _dict = dict;
 }
 
-void FastTextModel::setMatrix(Matrix matrix)
+void FastTextModel::setMatrix(Matrix input, Matrix output)
 {
-    _matrix = matrix;
+    _input_matrix = input;
+    _output_matrix = output;
 }
 
 void FastTextModel::setArg(Args arg)
@@ -70,14 +71,46 @@ void FastTextModel::setArg(Args arg)
     maxn = arg.maxn;
     lrUpdateRate = arg.lrUpdateRate;
     t = arg.t;
+    lr = arg.lr;
 }
 
 std::vector<real> FastTextModel::getVectorWrapper(std::string word)
 {
     Vector vec(dim);
-    getVector(_dict, _matrix, vec, word);
+    getVector(_dict, _input_matrix, vec, word);
     std::vector<real> vector(vec.data_, vec.data_ + vec.m_);
     return vector;
+}
+
+std::vector<double> FastTextModel::classifierTest(std::string filename)
+{
+    /* Initialize the model */
+    Model model(_input_matrix, _output_matrix, dim, lr, 1);
+    int32_t nexamples = 0;
+    double precision = 0.0;
+    std::vector<int32_t> line, labels;
+    std::ifstream ifs(filename);
+    if(!ifs.is_open()) {
+        std::cerr << "interface.cc: Test file cannot be opened!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    while (ifs.peek() != EOF) {
+        _dict.getLine(ifs, line, labels, model.rng);
+        _dict.addNgrams(line, wordNgrams);
+        if(labels.size() > 0 && line.size() > 0) {
+            int32_t i = model.predict(line);
+            if(std::find(labels.begin(), labels.end(), i) != labels.end()) {
+                precision += 1.0;
+            }
+            nexamples++;
+        }
+    }
+
+    ifs.close();
+    std::setprecision(3);
+    std::vector<double> result = {precision/nexamples, nexamples};
+    return result;
 }
 
 void trainWrapper(int argc, char **argv, int silent)
@@ -109,10 +142,10 @@ void loadModelWrapper(std::string filename, FastTextModel& model)
      * We parse it to the model, so we not depend on it anymore */
     model.setArg(args);
     model.setDict(dict);
-    model.setMatrix(input);
+    model.setMatrix(input, output);
 
-    /* Do the indexing on Cython instead to support unicode
-     * instead of plain bytes */
+    /* Do the indexing on Cython to support unicode instead of plain
+     * bytes */
     /*
     for(int32_t i = 0; i < dict.nwords(); i++) {
         std::string word  = dict.getWord(i);

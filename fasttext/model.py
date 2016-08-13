@@ -54,3 +54,7 @@ class SupervisedModel(object):
         self.maxn = model.maxn;
         self.lr_update_rate = model.lrUpdateRate;
         self.t = model.t;
+
+    def test(self, test_file):
+        return self._model.classifier_test(test_file)
+

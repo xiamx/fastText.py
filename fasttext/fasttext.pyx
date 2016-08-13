@@ -29,6 +29,13 @@ cdef class FastTextModelWrapper:
         word_bytes = bytes(word, 'utf-8')
         return self.fm.getVectorWrapper(word_bytes)
 
+    def classifier_test(self, test_file):
+        test_file = bytes(test_file, 'utf-8')
+        result = self.fm.classifierTest(test_file)
+        precision_at_one = float(result[0])
+        num_examples = int(result[1])
+        return precision_at_one, num_examples
+
     @property
     def dim(self):
         return self.fm.dim
