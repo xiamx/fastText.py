@@ -84,8 +84,13 @@ std::vector<real> FastTextModel::getVectorWrapper(std::string word)
 
 std::vector<double> FastTextModel::classifierTest(std::string filename)
 {
-    /* Initialize the model */
-    Model model(_input_matrix, _output_matrix, dim, lr, 1);
+    /* Initialize the model
+     * We use default value of learning rate here, since the fasttext(1) test
+     * command also use the default value.
+     * https://github.com/facebookresearch/fastText/blob/9bfa32d/src/fasttext.cc#L307
+     * (generated model.bin file doesn't contain the learning rate info, args.lr
+     * will have the default value when model.bin loaded) */
+    Model model(_input_matrix, _output_matrix, dim, args.lr, 1);
     int32_t nexamples = 0;
     double precision = 0.0;
     std::vector<int32_t> line, labels;
