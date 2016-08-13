@@ -12,6 +12,8 @@ import fasttext as ft
 supervised_file = path.join(path.dirname(__file__), 'supervised_params_test.bin')
 input_file = path.join(path.dirname(__file__), 'supervised_params_test.txt')
 output = path.join(path.dirname(__file__), 'generated_supervised')
+test_result = path.join(path.dirname(__file__), 'supervised_test_result.txt')
+test_file = input_file # Only for test
 
 def read_labels(filename, label_prefix):
     labels = []
@@ -90,6 +92,24 @@ class TestSupervisedModel(unittest.TestCase):
         # Make sure .bin and .vec are generated
         self.assertTrue(path.isfile(output + '.bin'))
         self.assertTrue(path.isfile(output + '.vec'))
+
+    def test_classifier_test(self):
+        # Read the test result from fasttext(1) using the same classifier model
+        precision_at_one = 0.0
+        num_examples = 0
+        with open(test_result) as f:
+            lines = f.readlines()
+            precision_at_one = float(lines[0][5:].strip())
+            num_examples = int(lines[1][20:].strip())
+
+        # Load and test using the same model and test set
+        classifier = ft.load_model(supervised_file, label_prefix='__label__')
+        p_at_1, num_ex = classifier.test(test_file)
+
+        # Make sure that the test result is the same as the result generated
+        # by fasttext(1)
+        self.assertEqual(p_at_1, precision_at_one)
+        self.assertEqual(num_ex, num_examples)
 
 if __name__ == '__main__':
     unittest.main()
