@@ -1,5 +1,8 @@
 # Set encoding to support Python 2
 # -*- coding: utf-8 -*-
+
+# We use unicode_literals to generalize unicode syntax in plain string ''
+# instead of u''. (to support python 3.2)
 from __future__ import unicode_literals
 import unittest
 from os import path
@@ -40,7 +43,7 @@ class TestCBOWModel(unittest.TestCase):
         self.assertTrue(unicode_str in model.words)
         self.assertEqual(len(model[unicode_str]), model.dim)
 
-    def test_create_cbow_model(self):
+    def test_train_cbow_model(self):
         # set params
         lr=0.005
         dim=10

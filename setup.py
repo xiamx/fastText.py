@@ -23,7 +23,7 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version='0.5.19',
+    version='0.6.0',
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
@@ -32,8 +32,7 @@ setup(
     packages=['fasttext'],
     ext_modules = cythonize(extensions),
     install_requires=[
-        'numpy>=1',
-        'future'
+        'numpy>=1'
     ],
     classifiers= [
         'Development Status :: 2 - Pre-Alpha',
