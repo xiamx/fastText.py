@@ -36,6 +36,13 @@ cdef class FastTextModelWrapper:
         num_examples = int(result[1])
         return precision_at_one, num_examples
 
+    def classifier_predict(self, text):
+        cdef string cpp_string
+        text_bytes = bytes(text, 'utf-8')
+        cpp_string = self.fm.classifierPredict(text_bytes)
+        label = cpp_string.decode('utf-8')
+        return label
+
     @property
     def dim(self):
         return self.fm.dim
@@ -120,7 +127,7 @@ def load_model(filename, label_prefix=''):
             label = cpp_string.decode('utf-8')
             # Remove the prefix
             labels.append(label.replace(label_prefix, ''))
-        return SupervisedModel(model, labels)
+        return SupervisedModel(model, labels, label_prefix)
     else:
         raise ValueError('fastText: model name is not valid!')
 

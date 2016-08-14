@@ -36,6 +36,7 @@ class FastTextModel {
         std::vector<std::string> getWords();
         std::vector<real> getVectorWrapper(std::string word);
         std::vector<double> classifierTest(std::string filename);
+        std::string classifierPredict(std::string text);
 
         void addWord(std::string word);
         void setDict(Dictionary dict);
@@ -49,3 +50,4 @@ void trainWrapper(int argc, char **argv, int silent);
 void loadModelWrapper(std::string filename, FastTextModel& model);
 
 #endif
+

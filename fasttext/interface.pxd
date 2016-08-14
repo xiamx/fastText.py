@@ -36,6 +36,7 @@ cdef extern from "interface.h":
         vector[string] getWords()
         vector[real] getVectorWrapper(string word)
         vector[double] classifierTest(string filename)
+        string classifierPredict(string text)
 
         Dictionary getDictionary()
 

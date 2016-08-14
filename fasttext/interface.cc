@@ -1,5 +1,6 @@
 /* An interface for fastText */
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -9,6 +10,7 @@
 #include "cpp/src/dictionary.h"
 #include "cpp/src/matrix.h"
 #include "cpp/src/vector.h"
+#include "cpp/src/model.h"
 
 #include "cpp/src/fasttext.cc"
 
@@ -91,6 +93,8 @@ std::vector<double> FastTextModel::classifierTest(std::string filename)
      * (generated model.bin file doesn't contain the learning rate info, args.lr
      * will have the default value when model.bin loaded) */
     Model model(_input_matrix, _output_matrix, dim, args.lr, 1);
+    model.setTargetCounts(_dict.getCounts(entry_type::label));
+
     int32_t nexamples = 0;
     double precision = 0.0;
     std::vector<int32_t> line, labels;
@@ -116,6 +120,49 @@ std::vector<double> FastTextModel::classifierTest(std::string filename)
     std::setprecision(3);
     std::vector<double> result = {precision/nexamples, (double)nexamples};
     return result;
+}
+
+std::string FastTextModel::classifierPredict(std::string text)
+{
+    /* Initialize the model
+     * We use default value of learning rate here, since the fasttext(1) test
+     * command also use the default value.
+     * https://github.com/facebookresearch/fastText/blob/9bfa32d/src/fasttext.cc#L307
+     * (generated model.bin file doesn't contain the learning rate info, args.lr
+     * will have the default value when model.bin loaded) */
+    Model model(_input_matrix, _output_matrix, dim, args.lr, 1);
+    model.setTargetCounts(_dict.getCounts(entry_type::label));
+    std::minstd_rand rng = model.rng;
+    std::uniform_real_distribution<> uniform(0, 1);
+
+    /* Hardcoded here; since we need this variable but the variable
+     * is private in dictionary.h */
+    const int32_t max_line_size = 1024;
+
+    /* List of word ids */
+    std::vector<int32_t> text_word_ids;
+    std::istringstream iss(text);
+    std::string token;
+
+    /* We implement the same logic as Dictionary::getLine */
+    while(iss >> token) {
+        int32_t word_id = _dict.getId(token);
+        if(word_id < 0) continue;
+        entry_type type = _dict.getType(word_id);
+        if (type == entry_type::word && !_dict.discard(word_id, uniform(rng))) {
+            text_word_ids.push_back(word_id);
+        }
+        if(text_word_ids.size() > max_line_size) break;
+    }
+    _dict.addNgrams(text_word_ids, wordNgrams);
+
+    if(text_word_ids.size() > 0) {
+        int32_t i = model.predict(text_word_ids);
+        return _dict.getLabel(i);
+    } else {
+        return "n/a";
+    }
+
 }
 
 void trainWrapper(int argc, char **argv, int silent)

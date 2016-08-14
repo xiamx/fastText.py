@@ -38,7 +38,7 @@ class WordVectorModel(object):
         return cosine_sim
 
 class SupervisedModel(object):
-    def __init__(self, model, labels):
+    def __init__(self, model, labels, label_prefix):
         self._model = model
         self.labels = labels
         self.dim = model.dim;
@@ -54,7 +54,15 @@ class SupervisedModel(object):
         self.maxn = model.maxn;
         self.lr_update_rate = model.lrUpdateRate;
         self.t = model.t;
+        self.label_prefix = label_prefix;
 
     def test(self, test_file):
         return self._model.classifier_test(test_file)
+
+    def predict(self, texts):
+        labels = []
+        for text in texts:
+            label = self._model.classifier_predict(text)
+            labels.append(label.replace(self.label_prefix, ''))
+        return labels
 
