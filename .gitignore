@@ -23,3 +23,4 @@ facebookresearch-fasttext-*
 
 # For test
 test/supervised_test_result.txt
+test/supervised_pred_result.txt

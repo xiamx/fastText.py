@@ -11,11 +11,13 @@ import fasttext as ft
 
 supervised_file = path.join(path.dirname(__file__), 'supervised_params_test.bin')
 input_file = path.join(path.dirname(__file__), 'supervised_params_test.txt')
+pred_file  = path.join(path.dirname(__file__), 'supervised_pred_test.txt')
 output = path.join(path.dirname(__file__), 'generated_supervised')
 test_result = path.join(path.dirname(__file__), 'supervised_test_result.txt')
+pred_result = path.join(path.dirname(__file__), 'supervised_pred_result.txt')
 test_file = input_file # Only for test
 
-def read_labels(filename, label_prefix):
+def read_labels(filename, label_prefix, unique=True):
     labels = []
     with open(filename, 'r') as f:
         for line in f:
@@ -31,10 +33,13 @@ def read_labels(filename, label_prefix):
             except:
                 line = line
 
-            label = line.split(',')[0].strip()
+            label = line.split(',', 1)[0].strip()
             label = label.replace(label_prefix, '')
-            if label in labels:
-                continue
+            if unique:
+                if label in labels:
+                    continue
+                else:
+                    labels.append(label)
             else:
                 labels.append(label)
     return labels
@@ -110,6 +115,30 @@ class TestSupervisedModel(unittest.TestCase):
         # by fasttext(1)
         self.assertEqual(p_at_1, precision_at_one)
         self.assertEqual(num_ex, num_examples)
+
+    def test_classifier_predict(self):
+        label_prefix = '__label__'
+        # Load the pre-trained classifier
+        classifier = ft.load_model(supervised_file, label_prefix=label_prefix)
+
+        # Read texts from the pred_file, prediction made by fasttext(1)
+        texts = []
+        with open(pred_file, 'r') as f:
+            for line in f:
+                try:
+                    line = line.decode('utf-8')
+                except:
+                    line = line
+                texts.append(line)
+
+        # Predict the labels
+        fasttext_labels = read_labels(pred_result, label_prefix=label_prefix,
+                unique=False)
+        labels = classifier.predict(texts)
+
+        # Make sure the returned labels are the same as predicted by
+        # fasttext(1)
+        self.assertTrue(labels == fasttext_labels)
 
 if __name__ == '__main__':
     unittest.main()

@@ -49,6 +49,13 @@ test/supervised_test_result.txt: test/supervised_params_test.bin
 	./fasttext/cpp/fasttext test test/supervised_params_test.bin \
 		test/supervised_params_test.txt > test/supervised_test_result.txt
 
+test/supervised_pred_result.txt: test/supervised_params_test.bin
+	./fasttext/cpp/fasttext predict test/supervised_params_test.bin \
+		test/supervised_pred_test.txt > \
+		test/supervised_pred_result.txt
+
 test-supervised: fasttext/cpp/fasttext test/supervised_params_test.bin \
-				 test/supervised_test_result.txt
+				 test/supervised_test_result.txt \
+				 test/supervised_pred_result.txt
 	python test/supervised_test.py --verbose
+
