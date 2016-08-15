@@ -11,6 +11,7 @@ Here are some guidelines and information about how to do so.
 1. Check out the code:
 
         $ git clone https://github.com/salestock/fastText.py.git
+        $ cd fastText.py
         $ pip install -r requirements.txt
 
 1. Create a fork of the fastText.py repository.
