@@ -23,11 +23,12 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version='0.6.0',
+    version='0.6.2',
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
     description='A Python interface for Facebook fastText library',
+    long_description=open('README.rst', 'r').read(),
     license='BSD 3-Clause License',
     packages=['fasttext'],
     ext_modules = cythonize(extensions),
