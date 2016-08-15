@@ -12,6 +12,14 @@ install:
 	python setup.py install
 .PHONY: install
 
+# Install the pandoc(1) first to run this command
+# sudo apt-get install pandoc
+README.rst: README.md
+	pandoc --from=markdown --to=rst --output=README.rst README.md
+
+upload: README.rst
+	python setup.py sdist upload
+
 install-dev:
 	python setup.py develop
 .PHONY: install-dev
