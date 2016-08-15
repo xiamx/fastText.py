@@ -10,7 +10,7 @@ Here are some guidelines and information about how to do so.
 
 1. Check out the code:
 
-        $ https://github.com/salestock/fastText.py.git
+        $ git clone https://github.com/salestock/fastText.py.git
         $ pip install -r requirements.txt
 
 1. Create a fork of the fastText.py repository.
