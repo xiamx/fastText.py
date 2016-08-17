@@ -35,10 +35,11 @@ Here are some guidelines and information about how to do so.
 When filing an issue, make sure to answer these five questions:
 
 1. What version of Python are you using (`python --version`)?
-2. What operating system and processor architecture are you using?
-3. What did you do?
-4. What did you expect to see?
-5. What did you see instead?
+2. What version of `fasttext` are you using (`pip list |  grep fasttext`)?
+3. What operating system and processor architecture are you using?
+4. What did you do?
+5. What did you expect to see?
+6. What did you see instead?
 
 ### Contributing code
 Unless otherwise noted, the fastText.py source files are distributed under
