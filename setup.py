@@ -3,6 +3,9 @@ from setuptools.extension import Extension
 from Cython.Build import cythonize
 import unittest
 
+# For __VERSION__
+import fasttext
+
 # Define the C++ extension
 extensions = [
     Extension('*',
@@ -23,7 +26,7 @@ extensions = [
 # Package details
 setup(
     name='fasttext',
-    version='0.6.2',
+    version=fasttext.__VERSION__,
     author='Bayu Aldi Yansyah',
     author_email='bayualdiyansyah@gmail.com',
     url='https://github.com/pyk/fastText.py',
