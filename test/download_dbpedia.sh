@@ -21,7 +21,7 @@ wget -c "https://googledrive.com/host/0Bz8a_Dbh9QhbQ2Vic1kxMmZZQ1k" \
     -O test/dbpedia_csv.tar.gz
 
 echo "Extract dbpedia_csv.tar.gz to test/"
-tar xzvf test/dbpedia_csv.tar.gz" -C test/
+tar xzvf test/dbpedia_csv.tar.gz -C test/
 
 echo "Creating the test/dbpedia.train ..."
 cat test/dbpedia_csv/train.csv | normalize_text > test/dbpedia.train
