@@ -41,6 +41,9 @@ cdef extern from "interface.h":
         Dictionary getDictionary()
 
     void trainWrapper(int argc, char **argvm, int silent)
-    void loadModelWrapper(string filename, FastTextModel& model)
+
+    # Add 'except +' to the function declaration to let Cython safely raise an
+    # appropriate Python exception instead
+    void loadModelWrapper(string filename, FastTextModel& model) except +
 
 
