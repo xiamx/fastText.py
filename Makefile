@@ -68,5 +68,5 @@ test/classifier_pred_result.txt: test/classifier.bin
 test-classifier: fasttext/cpp/fasttext test/classifier.bin \
 				 test/classifier_test_result.txt \
 				 test/classifier_pred_result.txt
-	python test/classifier_test.py --verbose --failfast
+	python test/classifier_test.py --verbose
 
