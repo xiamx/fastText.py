@@ -103,13 +103,18 @@ cdef class FastTextModelWrapper:
 # label_prefix is an optional argument to load the supervised model
 # prefix will be removed from the label name and stored in the model.labels
 def load_model(filename, label_prefix=''):
+
     # Check if the filename is readable
     if not os.path.isfile(filename):
         raise ValueError('fastText: trained model cannot be opened!')
 
     model = FastTextModelWrapper()
     filename_bytes = bytes(filename, 'utf-8')
-    loadModelWrapper(filename_bytes, model.fm)
+    try:
+        loadModelWrapper(filename_bytes, model.fm)
+    except:
+        raise Exception('fastText: Cannot load ' + filename +
+                ' due to C++ extension failed to allocate the memory')
 
     model_name = model.fm.modelName
     dictionary = model.fm.getDictionary()

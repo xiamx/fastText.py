@@ -36,7 +36,7 @@ void FastTextModel::setDict(Dictionary dict)
     _dict = dict;
 }
 
-void FastTextModel::setMatrix(Matrix input, Matrix output)
+void FastTextModel::setMatrix(Matrix& input, Matrix& output)
 {
     _input_matrix = input;
     _output_matrix = output;

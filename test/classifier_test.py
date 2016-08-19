@@ -9,13 +9,14 @@ from os import path
 
 import fasttext as ft
 
-supervised_file = path.join(path.dirname(__file__), 'supervised_params_test.bin')
-input_file = path.join(path.dirname(__file__), 'supervised_params_test.txt')
-pred_file  = path.join(path.dirname(__file__), 'supervised_pred_test.txt')
-output = path.join(path.dirname(__file__), 'generated_supervised')
-test_result = path.join(path.dirname(__file__), 'supervised_test_result.txt')
-pred_result = path.join(path.dirname(__file__), 'supervised_pred_result.txt')
-test_file = input_file # Only for test
+current_dir = path.dirname(__file__)
+classifier_bin = path.join(current_dir, 'classifier.bin')
+input_file = path.join(current_dir, 'dbpedia.train')
+pred_file  = path.join(current_dir, 'classifier_pred_test.txt')
+output = path.join(current_dir, 'generated_classifier')
+test_result = path.join(current_dir, 'classifier_test_result.txt')
+pred_result = path.join(current_dir, 'classifier_pred_result.txt')
+test_file = path.join(current_dir, 'classifier_test.txt')
 
 def read_labels(filename, label_prefix, unique=True):
     labels = []
@@ -44,18 +45,18 @@ def read_labels(filename, label_prefix, unique=True):
                 labels.append(label)
     return labels
 
-# Test to make sure that supervised interface run correctly
-class TestSupervisedModel(unittest.TestCase):
-    def test_load_supervised_model(self):
+# Test to make sure that classifier interface run correctly
+class TestClassifierModel(unittest.TestCase):
+    def test_load_classifier_model(self):
         label_prefix='__label__'
-        model = ft.load_model(supervised_file, label_prefix=label_prefix)
+        model = ft.load_model(classifier_bin, label_prefix=label_prefix)
 
         # Make sure the model is returned correctly
         self.assertEqual(model.model_name, 'supervised')
 
         # Make sure all params loaded correctly
         # see Makefile on target test-supervised for the params
-        self.assertEqual(model.dim, 10)
+        self.assertEqual(model.dim, 100)
         self.assertEqual(model.word_ngrams, 2)
         self.assertEqual(model.min_count, 1)
         self.assertEqual(model.epoch, 5)
@@ -76,7 +77,7 @@ class TestSupervisedModel(unittest.TestCase):
         word_ngrams=3
         bucket=2000000
         thread=4
-        silent=0
+        silent=1
         label_prefix='__label__'
 
         # Train the classifier
@@ -108,18 +109,19 @@ class TestSupervisedModel(unittest.TestCase):
             num_examples = int(lines[1][20:].strip())
 
         # Load and test using the same model and test set
-        classifier = ft.load_model(supervised_file, label_prefix='__label__')
+        classifier = ft.load_model(classifier_bin, label_prefix='__label__')
         p_at_1, num_ex = classifier.test(test_file)
 
         # Make sure that the test result is the same as the result generated
         # by fasttext(1)
+        p_at_1 = float("{0:.2f}".format(p_at_1))
         self.assertEqual(p_at_1, precision_at_one)
         self.assertEqual(num_ex, num_examples)
 
     def test_classifier_predict(self):
         label_prefix = '__label__'
         # Load the pre-trained classifier
-        classifier = ft.load_model(supervised_file, label_prefix=label_prefix)
+        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
 
         # Read texts from the pred_file, prediction made by fasttext(1)
         texts = []

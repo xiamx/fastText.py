@@ -40,7 +40,7 @@ class FastTextModel {
 
         void addWord(std::string word);
         void setDict(Dictionary dict);
-        void setMatrix(Matrix input, Matrix output);
+        void setMatrix(Matrix& input, Matrix& output);
         void setArg(Args arg);
 
         Dictionary getDictionary();
