@@ -77,7 +77,7 @@ class TestClassifierModel(unittest.TestCase):
         word_ngrams=3
         bucket=2000000
         thread=4
-        silent=0
+        silent=1
         label_prefix='__label__'
 
         # Train the classifier
