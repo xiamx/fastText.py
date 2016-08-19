@@ -22,8 +22,9 @@ facebookresearch-fasttext-*
 .eggs/
 
 # For test
-test/supervised_test_result.txt
-test/supervised_pred_result.txt
+test/classifier_pred_result.txt
+test/classifier_test_result.txt
+test/dbpedia.train
 
 # Misc
 TODO

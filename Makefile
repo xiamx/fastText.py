@@ -1,7 +1,7 @@
 
 all: install test
 
-test: test-skipgram test-cbow test-supervised
+test: test-skipgram test-cbow test-classifier
 
 buildext:
 	python setup.py build_ext --inplace
@@ -20,7 +20,7 @@ README.rst: README.md
 upload: README.rst
 	python setup.py sdist upload
 
-install-dev:
+install-dev: README.rst
 	python setup.py develop
 .PHONY: install-dev
 
@@ -48,22 +48,25 @@ test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
 	python test/cbow_test.py --verbose
 
 # Test for classifier
-test/supervised_params_test.bin:
-	./fasttext/cpp/fasttext supervised -input test/supervised_params_test.txt \
-		-output test/supervised_params_test -dim 10 -lr 0.1 -wordNgrams 2 \
+test/dbpedia.train: test/download_dbpedia.sh
+	sh test/download_dbpedia.sh # Download & normalize training file
+
+test/classifier.bin: test/dbpedia.train
+	./fasttext/cpp/fasttext supervised -input test/dbpedia.train \
+		-output test/classifier -dim 100 -lr 0.1 -wordNgrams 2 \
 		-minCount 1 -bucket 2000000 -epoch 5 -thread 4
 
-test/supervised_test_result.txt: test/supervised_params_test.bin
-	./fasttext/cpp/fasttext test test/supervised_params_test.bin \
-		test/supervised_params_test.txt > test/supervised_test_result.txt
+test/classifier_test_result.txt: test/classifier.bin
+	./fasttext/cpp/fasttext test test/classifier.bin \
+		test/classifier_test.txt > test/classifier_test_result.txt
 
-test/supervised_pred_result.txt: test/supervised_params_test.bin
-	./fasttext/cpp/fasttext predict test/supervised_params_test.bin \
-		test/supervised_pred_test.txt > \
-		test/supervised_pred_result.txt
+test/classifier_pred_result.txt: test/classifier.bin
+	./fasttext/cpp/fasttext predict test/classifier.bin \
+		test/classifier_pred_test.txt > \
+		test/classifier_pred_result.txt
 
-test-supervised: fasttext/cpp/fasttext test/supervised_params_test.bin \
-				 test/supervised_test_result.txt \
-				 test/supervised_pred_result.txt
-	python test/supervised_test.py --verbose
+test-classifier: fasttext/cpp/fasttext test/classifier.bin \
+				 test/classifier_test_result.txt \
+				 test/classifier_pred_result.txt
+	python test/classifier_test.py --verbose --failfast
 
