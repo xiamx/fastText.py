@@ -21,9 +21,6 @@ class WordVectorModel(object):
         self.lr_update_rate = model.lrUpdateRate;
         self.t = model.t;
 
-    def get_vector(self, word):
-        return self._model.get_vector(word)
-
     def __getitem__(self, word):
         return self._model.get_vector(word)
 
