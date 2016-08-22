@@ -1,7 +1,7 @@
-import fasttext
+import fasttext as ft
 
-# Download the dbpedia.train first on test/
-# and move to the example directory
+# Fist download the dbpedia.train using https://github.com/facebookresearch/fastText/blob/master/classification-example.sh
+# on test/ and move to the example directory
 current_dir = path.dirname(__file__)
 input_file = path.join(current_dir, 'dbpedia.train')
 output = '/tmp/classifier'
