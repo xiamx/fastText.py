@@ -1,7 +1,7 @@
 import fasttext as ft
 
-# Download the dbpedia.train first on test/
-# and move to the example directory
+# Fist download the dbpedia.train using https://github.com/facebookresearch/fastText/blob/master/classification-example.sh
+# on test/ and move to the example directory
 current_dir = path.dirname(__file__)
 input_file = path.join(current_dir, 'dbpedia.train')
 output = '/tmp/classifier'
@@ -24,9 +24,10 @@ classifier = ft.supervised(input_file, output, dim=dim, lr=lr, epoch=epoch,
     thread=thread, silent=silent, label_prefix=label_prefix)
 
 # Test the classifier
-p_at_1, num_ex = classifier.test(test_file)
-print 'P@1:', p_at_1
-print 'Number of examples:', num_ex
+result = classifier.test(test_file)
+print 'P@1:', result.precision
+print 'R@1:', result.recall
+print 'Number of examples:', result.nexamples
 
 # Predict some text
 # (Example text is from dbpedia.train)

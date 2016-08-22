@@ -129,7 +129,6 @@ class TestClassifierModel(unittest.TestCase):
 
         # Make sure .bin and .vec are generated
         self.assertTrue(path.isfile(output + '.bin'))
-        self.assertTrue(path.isfile(output + '.vec'))
 
     def test_classifier_test(self):
         # Read the test result from fasttext(1) using the same classifier model
