@@ -16,9 +16,11 @@ pred_file  = path.join(current_dir, 'classifier_pred_test.txt')
 output = path.join(current_dir, 'generated_classifier')
 test_result = path.join(current_dir, 'classifier_test_result.txt')
 pred_result = path.join(current_dir, 'classifier_pred_result.txt')
+pred_k_result = path.join(current_dir, 'classifier_pred_k_result.txt')
 test_file = path.join(current_dir, 'classifier_test.txt')
 
-def read_labels(filename, label_prefix, unique=True):
+# To validate model are loaded correctly
+def read_labels_from_input(filename, label_prefix):
     labels = []
     with open(filename, 'r') as f:
         for line in f:
@@ -36,14 +38,41 @@ def read_labels(filename, label_prefix, unique=True):
 
             label = line.split(',', 1)[0].strip()
             label = label.replace(label_prefix, '')
-            if unique:
-                if label in labels:
-                    continue
-                else:
-                    labels.append(label)
+            if label in labels:
+                continue
             else:
                 labels.append(label)
     return labels
+
+# To validate model have the same prediction as fasttext(1)
+def read_labels_from_result(filename, label_prefix):
+    all_labels = []
+    with open(filename, 'r') as f:
+        for line in f:
+            try:
+                line = line.decode('utf-8')
+            except:
+                line = line
+
+            labels = []
+            raw_labels = line.split(' ')
+            for raw_label in raw_labels:
+                label = raw_label.replace(label_prefix, '')
+                labels.append(label.strip())
+            all_labels.append(labels)
+    return all_labels
+
+# To read text data to predict
+def read_texts(pred_file):
+    texts = []
+    with open(pred_file, 'r') as f:
+        for line in f:
+            try:
+                line = line.decode('utf-8')
+            except:
+                line = line
+            texts.append(line)
+    return texts
 
 # Test to make sure that classifier interface run correctly
 class TestClassifierModel(unittest.TestCase):
@@ -63,7 +92,7 @@ class TestClassifierModel(unittest.TestCase):
         self.assertEqual(model.bucket, 2000000)
 
         # Read labels from the the input_file
-        labels = read_labels(input_file, label_prefix)
+        labels = read_labels_from_input(input_file, label_prefix)
 
         # Make sure labels are loaded correctly
         self.assertTrue(sorted(model.labels) == sorted(labels))
@@ -93,7 +122,10 @@ class TestClassifierModel(unittest.TestCase):
         self.assertEqual(model.bucket, bucket)
 
         # Read labels from the the input_file
-        labels = read_labels(input_file, label_prefix)
+        labels = read_labels_from_input(input_file, label_prefix)
+
+        # Make sure labels are loaded correctly
+        self.assertTrue(sorted(model.labels) == sorted(labels))
 
         # Make sure .bin and .vec are generated
         self.assertTrue(path.isfile(output + '.bin'))
@@ -102,41 +134,58 @@ class TestClassifierModel(unittest.TestCase):
     def test_classifier_test(self):
         # Read the test result from fasttext(1) using the same classifier model
         precision_at_one = 0.0
-        num_examples = 0
+        nexamples = 0
         with open(test_result) as f:
             lines = f.readlines()
             precision_at_one = float(lines[0][5:].strip())
-            num_examples = int(lines[1][20:].strip())
+            recall_at_one = float(lines[1][5:].strip())
+            nexamples = int(lines[2][20:].strip())
 
         # Load and test using the same model and test set
         classifier = ft.load_model(classifier_bin, label_prefix='__label__')
-        p_at_1, num_ex = classifier.test(test_file)
+        result = classifier.test(test_file, k=1)
 
         # Make sure that the test result is the same as the result generated
         # by fasttext(1)
-        p_at_1 = float("{0:.2f}".format(p_at_1))
+        p_at_1 = float("{0:.2f}".format(result.precision))
+        r_at_1 = float("{0:.2f}".format(result.recall))
         self.assertEqual(p_at_1, precision_at_one)
-        self.assertEqual(num_ex, num_examples)
+        self.assertEqual(r_at_1, recall_at_one)
+        self.assertEqual(result.nexamples, nexamples)
 
     def test_classifier_predict(self):
+        # Load the pre-trained classifier
+        label_prefix = '__label__'
+        classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
+
+        # Read prediction result from fasttext(1)
+        fasttext_labels = read_labels_from_result(pred_result,
+                label_prefix=label_prefix)
+
+        # Read texts from the pred_file
+        texts = read_texts(pred_file)
+
+        # Predict the labels
+        labels = classifier.predict(texts)
+
+        # Make sure the returned labels are the same as predicted by
+        # fasttext(1)
+        self.assertTrue(labels == fasttext_labels)
+
+    def test_classifier_predict_k_best(self):
         label_prefix = '__label__'
         # Load the pre-trained classifier
         classifier = ft.load_model(classifier_bin, label_prefix=label_prefix)
 
-        # Read texts from the pred_file, prediction made by fasttext(1)
-        texts = []
-        with open(pred_file, 'r') as f:
-            for line in f:
-                try:
-                    line = line.decode('utf-8')
-                except:
-                    line = line
-                texts.append(line)
+        # Read prediction result from fasttext(1)
+        fasttext_labels = read_labels_from_result(pred_k_result,
+                label_prefix=label_prefix)
 
-        # Predict the labels
-        fasttext_labels = read_labels(pred_result, label_prefix=label_prefix,
-                unique=False)
-        labels = classifier.predict(texts)
+        # Read texts from the pred_file
+        texts = read_texts(pred_file)
+
+        # Predict the k-best labels
+        labels = classifier.predict(texts, k=5)
 
         # Make sure the returned labels are the same as predicted by
         # fasttext(1)

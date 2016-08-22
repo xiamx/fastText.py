@@ -25,6 +25,8 @@ facebookresearch-fasttext-*
 test/classifier_pred_result.txt
 test/classifier_test_result.txt
 test/dbpedia.train
+test/classifier_pred_k_result.txt
+test/dbpedia_csv/
 
 # Misc
 TODO

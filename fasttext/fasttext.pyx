@@ -8,11 +8,13 @@ from interface cimport Dictionary
 # Python/C++ standart libraries
 from libc.stdlib cimport malloc, free
 from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 # Python module
 import os
 from model import WordVectorModel
 from model import SupervisedModel
+from model import ClassifierTestResult as CTRes
 from builtins import bytes
 
 # This class wrap C++ class FastTextModel, so it can be accessed via Python
@@ -29,19 +31,23 @@ cdef class FastTextModelWrapper:
         word_bytes = bytes(word, 'utf-8')
         return self.fm.getVectorWrapper(word_bytes)
 
-    def classifier_test(self, test_file):
+    def classifier_test(self, test_file, k):
         test_file = bytes(test_file, 'utf-8')
-        result = self.fm.classifierTest(test_file)
-        precision_at_one = float(result[0])
-        num_examples = int(result[1])
-        return precision_at_one, num_examples
+        result = self.fm.classifierTest(test_file, k)
+        precision = float(result[0])
+        recall = float(result[1])
+        nexamples = int(result[2])
+        return CTRes(precision, recall, nexamples)
 
-    def classifier_predict(self, text):
-        cdef string cpp_string
+    def classifier_predict(self, text, k):
+        cdef vector[string] raw_labels
         text_bytes = bytes(text, 'utf-8')
-        cpp_string = self.fm.classifierPredict(text_bytes)
-        label = cpp_string.decode('utf-8')
-        return label
+        labels = []
+        raw_labels = self.fm.classifierPredict(text_bytes, k)
+        for raw_label in raw_labels:
+            label = raw_label.decode('utf-8')
+            labels.append(label)
+        return labels
 
     @property
     def dim(self):

@@ -71,8 +71,14 @@ test/classifier_pred_result.txt: test/classifier.bin
 		test/classifier_pred_test.txt > \
 		test/classifier_pred_result.txt
 
+test/classifier_pred_k_result.txt: test/classifier.bin
+	./fasttext/cpp/fasttext predict test/classifier.bin \
+		test/classifier_pred_test.txt 5 > \
+		test/classifier_pred_k_result.txt
+
 test-classifier: fasttext/cpp/fasttext test/classifier.bin \
 				 test/classifier_test_result.txt \
-				 test/classifier_pred_result.txt
+				 test/classifier_pred_result.txt \
+				 test/classifier_pred_k_result.txt
 	python test/classifier_test.py --verbose
 

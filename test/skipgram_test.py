@@ -85,14 +85,12 @@ class TestSkipgramModel(unittest.TestCase):
 
         # Make sure the vector have the right dimension
         self.assertEqual(len(model['the']), dim)
-        self.assertEqual(len(model.get_vector('the')), dim)
 
         # Make sure we support unicode character
         unicode_str = 'Καλημέρα'
         self.assertTrue(unicode_str in model.words)
         self.assertTrue(unicode_str in model)
         self.assertEqual(len(model[unicode_str]), model.dim)
-        self.assertEqual(len(model.get_vector(unicode_str)), model.dim)
 
 if __name__ == '__main__':
     unittest.main()
