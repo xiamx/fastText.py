@@ -1,4 +1,4 @@
-import fasttext
+import fasttext as ft
 
 # Download the dbpedia.train first on test/
 # and move to the example directory
