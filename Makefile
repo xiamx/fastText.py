@@ -26,7 +26,7 @@ install-dev: README.rst
 
 pre-test:
 	# Remove generated file from test
-	rm test/*.vec test/*.bin test/*_result.txt
+	rm -f test/*.vec test/*.bin test/*_result.txt
 .PHONY: pre-test
 
 fasttext/cpp/fasttext:
