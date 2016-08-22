@@ -71,8 +71,6 @@ The previously trained model can be used to compute word vectors for
 out-of-vocabulary words.
 
 ```python
-print model.get_vector('king')
-# or just use a nice syntax
 print model['king'] # get the vector of the word 'king'
 ```
 
@@ -132,12 +130,13 @@ equivalent as `fasttext(1)` command:
 This will output two files: `model.bin` and `model.vec`.
 
 Once the model was trained, we can evaluate it by computing the precision
-at 1 (P@1) on a test set using `classifier.test` function:
+at 1 (P@1) and the recall on a test set using `classifier.test` function:
 
 ```python
-precision_at_one, nexamples = classifier.test('test.txt')
-print 'P@1:', precision_at_one
-print 'Number of examples:', nexamples
+result = classifier.test('test.txt')
+print 'P@1:', result.precision
+print 'R@1:', result.recall
+print 'Number of examples:', result.nexamples
 ```
 
 This will print the same output to stdout as:
@@ -145,12 +144,20 @@ This will print the same output to stdout as:
 ```shell
 ./fasttext test model.bin test.txt
 ```
+
 In order to obtain the most likely label for a list of text, we can
 use `classifer.predict` method:
 
 ```python
 texts = ['example very long text 1', 'example very longtext 2']
 labels = classifier.predict(texts)
+print labels
+```
+
+We can specify `k` value to get the k-best labels from classifier:
+
+```python
+labels = classifier.predict(texts, k=3)
 print labels
 ```
 
@@ -203,7 +210,6 @@ model.minn             # Min length of char ngram
 model.maxn             # Max length of char ngram
 model.lr_update_rate   # Rate of updates for the learning rate
 model.t                # Value of sampling threshold
-model.get_vector(word) # Get the vector of specified word
 model[word]            # Get the vector of specified word
 ```
 
@@ -236,8 +242,15 @@ model and test set will produce the same value for the precision at one
 and the number of examples.
 
 ```python
-precision_at_one, nexamples = classifier.test(test_file)
+result = classifier.test(params)
+
+# Properties
+result.precision # Precision at one
+result.recall    # Recall at one
+result.nexamples # Number of test examples
 ```
+
+The param `k` is optional, and equal to `1` by default.
 
 ### Predict the most-likely label of texts
 
@@ -246,32 +259,38 @@ This interface is equivalent as `fasttext(1)` predict command.
 `texts` is an array of string
 
 ```python
-labels = classifier.predict(texts)
+labels = classifier.predict(texts, k)
 
 ```
+
+The param `k` is optional, and equal to `1` by default.
 
 ### Attributes and methods for the classifier
 
 Classifier have the following atributes & methods
 
 ```python
-classifier.labels         # List of labels
-classifier.label_prefix   # Prefix of the label
-classifier.dim            # Size of word vector
-classifier.ws             # Size of context window
-classifier.epoch          # Number of epochs
-classifier.min_count      # Minimal number of word occurences
-classifier.neg            # Number of negative sampled
-classifier.word_ngrams    # Max length of word ngram
-classifier.loss_name      # Loss function name
-classifier.bucket         # Number of buckets
-classifier.minn           # Min length of char ngram
-classifier.maxn           # Max length of char ngram
-classifier.lr_update_rate # Rate of updates for the learning rate
-classifier.t              # Value of sampling threshold
-classifier.test(filename) # Test the classifier
-classifier.predict(texts) # Predict the most likely label
+classifier.labels            # List of labels
+classifier.label_prefix      # Prefix of the label
+classifier.dim               # Size of word vector
+classifier.ws                # Size of context window
+classifier.epoch             # Number of epochs
+classifier.min_count         # Minimal number of word occurences
+classifier.neg               # Number of negative sampled
+classifier.word_ngrams       # Max length of word ngram
+classifier.loss_name         # Loss function name
+classifier.bucket            # Number of buckets
+classifier.minn              # Min length of char ngram
+classifier.maxn              # Max length of char ngram
+classifier.lr_update_rate    # Rate of updates for the learning rate
+classifier.t                 # Value of sampling threshold
+classifier.test(filename, k) # Test the classifier
+classifier.predict(texts, k) # Predict the most likely label
+
 ```
+
+The param `k` for `classifier.test` and `classifier.predict` is optional,
+and equal to `1` by default.
 
 ### Params
 List of available `params` and their default value:
