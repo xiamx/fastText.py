@@ -24,6 +24,11 @@ install-dev: README.rst
 	python setup.py develop
 .PHONY: install-dev
 
+pre-test:
+	# Remove generated file from test
+	rm test/*.vec test/*.bin test/*_result.txt
+.PHONY: pre-test
+
 fasttext/cpp/fasttext:
 	make --directory fasttext/cpp/
 
@@ -36,7 +41,7 @@ test/skipgram_params_test.bin:
 		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4 >> /dev/null
 
-test-skipgram: fasttext/cpp/fasttext test/skipgram_params_test.bin
+test-skipgram: pre-test fasttext/cpp/fasttext test/skipgram_params_test.bin
 	python test/skipgram_test.py --verbose
 
 # Test for cbow model
@@ -48,7 +53,7 @@ test/cbow_params_test.bin:
 		-minCount 1 -neg 5 -loss ns -bucket 2000000 -minn 3 -maxn 6 \
 		-thread 4 -lrUpdateRate 100 -t 1e-4 >> /dev/null
 
-test-cbow: fasttext/cpp/fasttext test/cbow_params_test.bin
+test-cbow: pre-test fasttext/cpp/fasttext test/cbow_params_test.bin
 	python test/cbow_test.py --verbose
 
 # Test for classifier
@@ -76,7 +81,7 @@ test/classifier_pred_k_result.txt: test/classifier.bin
 		test/classifier_pred_test.txt 5 > \
 		test/classifier_pred_k_result.txt
 
-test-classifier: fasttext/cpp/fasttext test/classifier.bin \
+test-classifier: pre-test fasttext/cpp/fasttext test/classifier.bin \
 				 test/classifier_test_result.txt \
 				 test/classifier_pred_result.txt \
 				 test/classifier_pred_k_result.txt
