@@ -2,7 +2,7 @@
 import numpy as np
 from numpy.linalg import norm
 
-
+# Class for Skipgram and CBOW model
 class WordVectorModel(object):
     def __init__(self, model, words):
         self._model = model
@@ -37,6 +37,7 @@ class WordVectorModel(object):
         cosine_sim = dot_product / (norm(v1) * norm(v2))
         return cosine_sim
 
+# Class for classifier model
 class SupervisedModel(object):
     def __init__(self, model, labels, label_prefix):
         self._model = model
@@ -56,13 +57,24 @@ class SupervisedModel(object):
         self.t = model.t;
         self.label_prefix = label_prefix;
 
-    def test(self, test_file):
-        return self._model.classifier_test(test_file)
+    def test(self, test_file, k=1):
+        return self._model.classifier_test(test_file, k)
 
-    def predict(self, texts):
-        labels = []
+    def predict(self, texts, k=1):
+        all_labels = []
         for text in texts:
-            label = self._model.classifier_predict(text)
-            labels.append(label.replace(self.label_prefix, ''))
-        return labels
+            labels = []
+            raw_labels = self._model.classifier_predict(text, k=k)
+            for raw_label in raw_labels:
+                label = raw_label.replace(self.label_prefix, '')
+                labels.append(label)
+            all_labels.append(labels)
+        return all_labels
+
+# Class for test result
+class ClassifierTestResult(object):
+    def __init__(self, precision, recall, nexamples):
+        self.precision = precision
+        self.recall = recall
+        self.nexamples = nexamples
 

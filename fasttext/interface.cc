@@ -84,7 +84,8 @@ std::vector<real> FastTextModel::getVectorWrapper(std::string word)
     return vector;
 }
 
-std::vector<double> FastTextModel::classifierTest(std::string filename)
+std::vector<double> FastTextModel::classifierTest(std::string filename,
+        int32_t k)
 {
     /* Initialize the model
      * We use default value of learning rate here, since the fasttext(1) test
@@ -96,8 +97,10 @@ std::vector<double> FastTextModel::classifierTest(std::string filename)
     model.setTargetCounts(_dict.getCounts(entry_type::label));
 
     int32_t nexamples = 0;
+    int32_t nlabels = 0;
     double precision = 0.0;
-    std::vector<int32_t> line, labels;
+    std::vector<int32_t> line;
+    std::vector<int32_t> labels;
     std::ifstream ifs(filename);
     if(!ifs.is_open()) {
         std::cerr << "interface.cc: Test file cannot be opened!" << std::endl;
@@ -108,21 +111,32 @@ std::vector<double> FastTextModel::classifierTest(std::string filename)
         _dict.getLine(ifs, line, labels, model.rng);
         _dict.addNgrams(line, wordNgrams);
         if(labels.size() > 0 && line.size() > 0) {
-            int32_t i = model.predict(line);
-            if(std::find(labels.begin(), labels.end(), i) != labels.end()) {
-                precision += 1.0;
+            std::vector<std::pair<real, int32_t>> predictions;
+            model.predict(line, k, predictions);
+            for(auto it = predictions.cbegin(); it != predictions.cend();
+                    it++) {
+                int32_t i = it->second;
+                if(std::find(labels.begin(), labels.end(), i)
+                        != labels.end()) {
+                    precision += 1.0;
+                }
             }
             nexamples++;
+            nlabels += labels.size();
         }
     }
 
     ifs.close();
     std::setprecision(3);
-    std::vector<double> result = {precision/nexamples, (double)nexamples};
+    std::vector<double> result;
+    result.push_back(precision/(k * nexamples));
+    result.push_back(precision/nlabels);
+    result.push_back((double)nexamples);
     return result;
 }
 
-std::string FastTextModel::classifierPredict(std::string text)
+std::vector<std::string> FastTextModel::classifierPredict(std::string text,
+        int32_t k)
 {
     /* Initialize the model
      * We use default value of learning rate here, since the fasttext(1) test
@@ -156,11 +170,18 @@ std::string FastTextModel::classifierPredict(std::string text)
     }
     _dict.addNgrams(text_word_ids, wordNgrams);
 
+    std::vector<std::string> labels;
     if(text_word_ids.size() > 0) {
-        int32_t i = model.predict(text_word_ids);
-        return _dict.getLabel(i);
+        std::vector<std::pair<real, int32_t>> predictions;
+
+        model.predict(text_word_ids, k, predictions);
+        for(auto it = predictions.cbegin(); it != predictions.cend(); it++) {
+            labels.push_back(_dict.getLabel(it->second));
+        }
+
+        return labels;
     } else {
-        return "n/a";
+        return labels;
     }
 
 }
