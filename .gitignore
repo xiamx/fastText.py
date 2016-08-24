@@ -27,6 +27,8 @@ test/classifier_test_result.txt
 test/dbpedia.train
 test/classifier_pred_k_result.txt
 test/dbpedia_csv/
+test/default_params_result.txt
+test/default_params_test
 
 # Misc
 TODO
