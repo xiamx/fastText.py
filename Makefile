@@ -1,7 +1,7 @@
 
 all: install test
 
-test: test-skipgram test-cbow test-classifier
+test: test-skipgram test-cbow test-classifier test-default-params
 
 buildext:
 	python setup.py build_ext --inplace
@@ -87,3 +87,7 @@ test-classifier: pre-test fasttext/cpp/fasttext test/classifier.bin \
 				 test/classifier_pred_k_result.txt
 	python test/classifier_test.py --verbose
 
+# Default params test
+test-default-params:
+	$(MAKE) --directory test
+	python test/default_params_test.py --verbose
