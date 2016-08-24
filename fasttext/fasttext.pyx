@@ -202,29 +202,68 @@ def train_wrapper(model_name, input_file, output, label_prefix, lr, dim, ws,
 
     return model
 
+# Default value from fasttext(1)
+LR=0.05
+DIM=100
+WS=5
+EPOCH=5
+MINCOUNT=5
+NEG=5
+WORDNGRAMS=1
+LOSS='ns'
+BUCKET=2000000
+MINN=3
+MAXN=6
+THREAD=12
+LRUPDATERATE=100
+T=1e-4
+SILENT=1
+LABELPREFIX='__label__'
+
+# Set as dictionary for easier to lookup & test
+default_args = {
+    'lr': LR,
+    'dim': DIM,
+    'ws': WS,
+    'epoch': EPOCH,
+    'minCount': MINCOUNT,
+    'neg': NEG,
+    'wordNgrams': WORDNGRAMS,
+    'loss': LOSS,
+    'bucket': BUCKET,
+    'minn': MINN,
+    'maxn': MAXN,
+    'thread': THREAD,
+    'lrUpdateRate': LRUPDATERATE,
+    't': T,
+    'label': LABELPREFIX
+}
+
 # Learn word representation using skipgram model
-def skipgram(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
-        neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
-        thread=12, lr_update_rate=100, t=1e-4, silent=1):
+def skipgram(input_file, output, lr=LR, dim=DIM, ws=WS, epoch=EPOCH,
+        min_count=MINCOUNT, neg=NEG, word_ngrams=WORDNGRAMS, loss=LOSS,
+        bucket=BUCKET, minn=MINN, maxn=MAXN, thread=THREAD,
+        lr_update_rate=LRUPDATERATE, t=T, silent=SILENT):
     label_prefix = ''
     return train_wrapper('skipgram', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
             maxn, thread, lr_update_rate, t, silent)
 
 # Learn word representation using CBOW model
-def cbow(input_file, output, lr=0.05, dim=100, ws=5, epoch=5, min_count=5,
-        neg=5, word_ngrams=1, loss='ns', bucket=2000000, minn=3, maxn=6,
-        thread=12, lr_update_rate=100, t=1e-4, silent=1):
+def cbow(input_file, output, lr=LR, dim=DIM, ws=WS, epoch=EPOCH,
+        min_count=MINCOUNT, neg=NEG, word_ngrams=WORDNGRAMS, loss=LOSS,
+        bucket=BUCKET, minn=MINN, maxn=MAXN, thread=THREAD,
+        lr_update_rate=LRUPDATERATE, t=T, silent=SILENT):
     label_prefix = ''
     return train_wrapper('cbow', input_file, output, label_prefix, lr, dim,
             ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn, maxn,
             thread, lr_update_rate, t, silent)
 
 # Train classifier
-def supervised(input_file, output, label_prefix='__label__', lr=0.05, dim=100,
-        ws=5, epoch=5, min_count=5, neg=5, word_ngrams=1, loss='ns',
-        bucket=2000000, minn=3, maxn=6, thread=12, lr_update_rate=100,
-        t=1e-4, silent=1):
+def supervised(input_file, output, label_prefix=LABELPREFIX, lr=LR, dim=DIM,
+        ws=WS, epoch=EPOCH, min_count=MINCOUNT, neg=NEG, word_ngrams=WORDNGRAMS,
+        loss=LOSS, bucket=BUCKET, minn=MINN, maxn=MAXN, thread=THREAD,
+        lr_update_rate=LRUPDATERATE, t=T, silent=SILENT):
     return train_wrapper('supervised', input_file, output, label_prefix, lr,
             dim, ws, epoch, min_count, neg, word_ngrams, loss, bucket, minn,
             maxn, thread, lr_update_rate, t, silent)
