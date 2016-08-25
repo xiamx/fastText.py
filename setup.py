@@ -22,7 +22,7 @@ extensions = [
             'fasttext/cpp/src/vector.cc'
         ],
         language='c++',
-        extra_compile_args=['-pthread', '-funroll-loops', '-std=c++0x'])
+        extra_compile_args=['-O3', '-pthread', '-funroll-loops', '-std=c++0x', '-stdlib=libc++', '-mmacosx-version-min=10.7'])
 ]
 
 # Package details
