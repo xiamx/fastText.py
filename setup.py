@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
+from sys import platform
 import unittest
 
 # Read the fastText.py version
@@ -9,6 +10,12 @@ def read_version():
         return f.read().strip()
 
 # Define the C++ extension
+
+if platform == "darwin":
+    extra_compile_args = ['-O3', '-pthread', '-funroll-loops', '-std=c++0x', '-stdlib=libc++', '-mmacosx-version-min=10.7']
+else:
+    extra_compile_args = ['-O3', '-pthread', '-funroll-loops', '-std=c++0x']
+
 extensions = [
     Extension('*',
         sources=[
@@ -22,7 +29,7 @@ extensions = [
             'fasttext/cpp/src/vector.cc'
         ],
         language='c++',
-        extra_compile_args=['-O3', '-pthread', '-funroll-loops', '-std=c++0x', '-stdlib=libc++', '-mmacosx-version-min=10.7'])
+        extra_compile_args=extra_compile_args)
 ]
 
 # Package details
